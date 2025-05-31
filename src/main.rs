@@ -11,6 +11,8 @@ use esp_hal::gpio::OutputConfig;
 use esp_println as _;
 use log::info;
 
+pub mod types;
+
 #[main]
 fn main() -> ! {
     esp_println::logger::init_logger_from_env();
