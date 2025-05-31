@@ -8,6 +8,7 @@ use esp_hal::time::{Duration, Instant};
 use esp_hal::gpio::Level;
 use esp_hal::gpio::Output;
 use esp_hal::gpio::OutputConfig;
+use esp_println as _;
 use log::info;
 
 #[main]
@@ -25,6 +26,7 @@ fn main() -> ! {
     
     loop {
         led.toggle();
+        info!("Toggled!");
         let delay_start = Instant::now();
         while delay_start.elapsed() < Duration::from_millis(500) {}
     }

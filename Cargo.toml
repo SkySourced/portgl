@@ -1,11 +1,11 @@
 [package]
 edition = "2021"
-name    = "portgl"
+name = "portgl"
 version = "0.1.0"
 
 [[bin]]
 name = "portgl"
-path = "./src/bin/main.rs"
+path = "./src/main.rs"
 test = false
 
 [dependencies]
@@ -14,11 +14,16 @@ esp-backtrace = { version = "0.15.1", features = [
   "esp32s3",
   "exception-handler",
   "panic-handler",
-  "println",
+  "defmt",
 ] }
 esp-hal = { version = "1.0.0-beta.0", features = ["esp32s3"] }
-esp-println = { version = "0.13.0", features = ["esp32s3", "log"] }
-log = { version = "0.4.21" }
+esp-println = { version = "0.13.0", features = [
+  "esp32s3",
+  "log",
+  "defmt-espflash",
+] }
+defmt = "1.0.1"
+log = "0.4.26"
 
 [profile.dev]
 # Rust debug is too slow.
@@ -26,10 +31,10 @@ log = { version = "0.4.21" }
 opt-level = "s"
 
 [profile.release]
-codegen-units    = 1     # LLVM can perform better optimizations using a single thread
-debug            = 2
+codegen-units = 1        # LLVM can perform better optimizations using a single thread
+debug = 2
 debug-assertions = false
-incremental      = false
-lto              = 'fat'
-opt-level        = 's'
-overflow-checks  = false
+incremental = false
+lto = 'fat'
+opt-level = 's'
+overflow-checks = false
