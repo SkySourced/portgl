@@ -1,172 +1,315 @@
+use super::vector::{Vec3, Vec4};
+
 /// Represents a 4x4 matrix.
+/// Structure:
+// [v_00 v_01 v_02 v_03]
+// [v_10 v_11 v_12 v_13]
+// [v_20 v_21 v_22 v_23]
+// [v_30 v_31 v_32 v_33]
 pub struct Mat4<T> {
-    v_00: T, 
-    v_01: T,
-    v_02: T,
-    v_03: T,
-    v_10: T,
-    v_11: T,
-    v_12: T,
-    v_13: T,
-    v_20: T,
-    v_21: T,
-    v_22: T,
-    v_23: T,
-    v_30: T,
-    v_31: T,
-    v_32: T,
-    v_33: T,
+    pub v_00: T,
+    pub v_01: T,
+    pub v_02: T,
+    pub v_03: T,
+    pub v_10: T,
+    pub v_11: T,
+    pub v_12: T,
+    pub v_13: T,
+    pub v_20: T,
+    pub v_21: T,
+    pub v_22: T,
+    pub v_23: T,
+    pub v_30: T,
+    pub v_31: T,
+    pub v_32: T,
+    pub v_33: T,
 }
 
-impl Mat4<T> {
-    /// Adds the provided matrix to this matrix, and returns the matrix for chaining.
-    fn add(&self, other: &Mat4<T>) -> Mat4<T> {
-        self.v_00 += other.v_00;
-        self.v_01 += other.v_01;
-        self.v_02 += other.v_02;
-        self.v_03 += other.v_03;
-        self.v_10 += other.v_10;
-        self.v_11 += other.v_11;
-        self.v_12 += other.v_12;
-        self.v_13 += other.v_13;
-        self.v_20 += other.v_20;
-        self.v_21 += other.v_21;
-        self.v_22 += other.v_22;
-        self.v_23 += other.v_23;
-        self.v_30 += other.v_30;
-        self.v_31 += other.v_31;
-        self.v_32 += other.v_32;
-        self.v_33 += other.v_33;
-        self
-    }
-
-    /// Subtracts the provided matrix from this matrix, and returns the matrix for chaining.
-    fn sub(&self, other: &Mat4<T>) -> Mat4<T> {
-        self.v_00 -= other.v_00;
-        self.v_01 -= other.v_01;
-        self.v_02 -= other.v_02;
-        self.v_03 -= other.v_03;
-        self.v_10 -= other.v_10;
-        self.v_11 -= other.v_11;
-        self.v_12 -= other.v_12;
-        self.v_13 -= other.v_13;
-        self.v_20 -= other.v_20;
-        self.v_21 -= other.v_21;
-        self.v_22 -= other.v_22;
-        self.v_23 -= other.v_23;
-        self.v_30 -= other.v_30;
-        self.v_31 -= other.v_31;
-        self.v_32 -= other.v_32;
-        self.v_33 -= other.v_33;
-        self
-    }
-
-    /// Multiplies this matrix by the provided matrix, and returns the matrix for chaining.
-    fn mul(&self, other: &Mat4<T>) -> Mat4<T> {
-        Mat4<T> {
-            v_00: self.v_00 * other.v_00 + self.v_01 * other.v_10 + self.v_02 * other.v_20 + self.v_03 * other.v_30,
-            v_01: self.v_00 * other.v_01 + self.v_01 * other.v_11 + self.v_02 * other.v_21 + self.v_03 * other.v_31,
-            v_02: self.v_00 * other.v_02 + self.v_01 * other.v_12 + self.v_02 * other.v_22 + self.v_03 * other.v_32,
-            v_03: self.v_00 * other.v_03 + self.v_01 * other.v_13 + self.v_02 * other.v_23 + self.v_03 * other.v_33,
-            v_10: self.v_10 * other.v_00 + self.v_11 * other.v_10 + self.v_12 * other.v_20 + self.v_13 * other.v_30,
-            v_11: self.v_10 * other.v_01 + self.v_11 * other.v_11 + self.v_12 * other.v_21 + self.v_13 * other.v_31,
-            v_12: self.v_10 * other.v_02 + self.v_11 * other.v_12 + self.v_12 * other.v_22 + self.v_13 * other.v_32,
-            v_13: self.v_10 * other.v_03 + self.v_11 * other.v_13 + self.v_12 * other.v_23 + self.v_13 * other.v_33,
-            v_20: self.v_20 * other.v_00 + self.v_21 * other.v_10 + self.v_22 * other.v_20 + self.v_23 * other.v_30,
-            v_21: self.v_20 * other.v_01 + self.v_21 * other.v_11 + self.v_22 * other.v_21 + self.v_23 * other.v_31,
-            v_22: self.v_20 * other.v_02 + self.v_21 * other.v_12 + self.v_22 * other.v_22 + self.v_23 * other.v_32,
-            v_23: self.v_20 * other.v_03 + self.v_21 * other.v_13 + self.v_22 * other.v_23 + self.v_23 * other.v_33,
-            v_30: self.v_30 * other.v_00 + self.v_31 * other.v_10 + self.v_32 * other.v_20 + self.v_33 * other.v_30,
-            v_31: self.v_30 * other.v_01 + self.v_31 * other.v_11 + self.v_32 * other.v_21 + self.v_33 * other.v_31,
-            v_32: self.v_30 * other.v_02 + self.v_31 * other.v_12 + self.v_32 * other.v_22 + self.v_33 * other.v_32,
-            v_33: self.v_30 * other.v_03 + self.v_31 * other.v_13 + self.v_32 * other.v_23 + self.v_33 * other.v_33,
+impl core::ops::Add<Mat4<f32>> for Mat4<f32> {
+    type Output = Mat4<f32>;
+    fn add(self, rhs: Mat4<f32>) -> Self::Output {
+        Mat4::<f32> {
+            v_00: self.v_00 + rhs.v_00,
+            v_01: self.v_01 + rhs.v_01,
+            v_02: self.v_02 + rhs.v_02,
+            v_03: self.v_03 + rhs.v_03,
+            v_10: self.v_10 + rhs.v_10,
+            v_11: self.v_11 + rhs.v_11,
+            v_12: self.v_12 + rhs.v_12,
+            v_13: self.v_13 + rhs.v_13,
+            v_20: self.v_20 + rhs.v_20,
+            v_21: self.v_21 + rhs.v_21,
+            v_22: self.v_22 + rhs.v_22,
+            v_23: self.v_23 + rhs.v_23,
+            v_30: self.v_30 + rhs.v_30,
+            v_31: self.v_31 + rhs.v_31,
+            v_32: self.v_32 + rhs.v_32,
+            v_33: self.v_33 + rhs.v_33,
         }
     }
+}
 
-    /// Scales the matrix by a linear factor, and returns the matrix for chaining.
-    fn scl(&self, factor: f32) -> Mat4<T> {
-        self.v_00 *= factor;
-        self.v_01 *= factor;
-        self.v_02 *= factor;
-        self.v_03 *= factor;
-        self.v_10 *= factor;
-        self.v_11 *= factor;
-        self.v_12 *= factor;
-        self.v_13 *= factor;
-        self.v_10 *= factor;
-        self.v_21 *= factor;
-        self.v_22 *= factor;
-        self.v_23 *= factor;
-        self.v_30 *= factor;
-        self.v_31 *= factor;
-        self.v_32 *= factor;
-        self.v_33 *= factor;
-        self
+impl core::ops::AddAssign<Mat4<f32>> for Mat4<f32> {
+    fn add_assign(&mut self, rhs: Mat4<f32>) {
+        self.v_00 += rhs.v_00;
+        self.v_01 += rhs.v_01;
+        self.v_02 += rhs.v_02;
+        self.v_03 += rhs.v_03;
+        self.v_10 += rhs.v_10;
+        self.v_11 += rhs.v_11;
+        self.v_12 += rhs.v_12;
+        self.v_13 += rhs.v_13;
+        self.v_20 += rhs.v_20;
+        self.v_21 += rhs.v_21;
+        self.v_22 += rhs.v_22;
+        self.v_23 += rhs.v_23;
+        self.v_30 += rhs.v_30;
+        self.v_31 += rhs.v_31;
+        self.v_32 += rhs.v_32;
+        self.v_33 += rhs.v_33;
     }
+}
 
-    /// Returns a distinct copy of this matrix.
-    fn cpy(&self) -> Mat4<T> {
-        Mat4<T> {
-            v_00: self.v_00,
-            v_01: self.v_01,
-            v_02: self.v_02,
-            v_03: self.v_03,
-            v_10: self.v_10,
-            v_11: self.v_11,
-            v_12: self.v_12,
-            v_13: self.v_13,
-            v_20: self.v_20,
-            v_21: self.v_21,
-            v_22: self.v_22,
-            v_23: self.v_23,
-            v_30: self.v_30,
-            v_31: self.v_31,
-            v_32: self.v_32,
-            v_33: self.v_33,
+impl core::ops::Mul<Mat4<f32>> for Mat4<f32> {
+    type Output = Mat4<f32>;
+    fn mul(self, rhs: Mat4<f32>) -> Self::Output {
+        Mat4::<f32> {
+            v_00: self.v_00 * rhs.v_00
+                + self.v_01 * rhs.v_10
+                + self.v_02 * rhs.v_20
+                + self.v_03 * rhs.v_30,
+            v_01: self.v_00 * rhs.v_01
+                + self.v_01 * rhs.v_11
+                + self.v_02 * rhs.v_21
+                + self.v_03 * rhs.v_31,
+            v_02: self.v_00 * rhs.v_02
+                + self.v_01 * rhs.v_12
+                + self.v_02 * rhs.v_22
+                + self.v_03 * rhs.v_32,
+            v_03: self.v_00 * rhs.v_03
+                + self.v_01 * rhs.v_13
+                + self.v_02 * rhs.v_23
+                + self.v_03 * rhs.v_33,
+            v_10: self.v_10 * rhs.v_00
+                + self.v_11 * rhs.v_10
+                + self.v_12 * rhs.v_20
+                + self.v_13 * rhs.v_30,
+            v_11: self.v_10 * rhs.v_01
+                + self.v_11 * rhs.v_11
+                + self.v_12 * rhs.v_21
+                + self.v_13 * rhs.v_31,
+            v_12: self.v_10 * rhs.v_02
+                + self.v_11 * rhs.v_12
+                + self.v_12 * rhs.v_22
+                + self.v_13 * rhs.v_32,
+            v_13: self.v_10 * rhs.v_03
+                + self.v_11 * rhs.v_13
+                + self.v_12 * rhs.v_23
+                + self.v_13 * rhs.v_33,
+            v_20: self.v_20 * rhs.v_00
+                + self.v_21 * rhs.v_10
+                + self.v_22 * rhs.v_20
+                + self.v_23 * rhs.v_30,
+            v_21: self.v_20 * rhs.v_01
+                + self.v_21 * rhs.v_11
+                + self.v_22 * rhs.v_21
+                + self.v_23 * rhs.v_31,
+            v_22: self.v_20 * rhs.v_02
+                + self.v_21 * rhs.v_12
+                + self.v_22 * rhs.v_22
+                + self.v_23 * rhs.v_32,
+            v_23: self.v_20 * rhs.v_03
+                + self.v_21 * rhs.v_13
+                + self.v_22 * rhs.v_23
+                + self.v_23 * rhs.v_33,
+            v_30: self.v_30 * rhs.v_00
+                + self.v_31 * rhs.v_10
+                + self.v_32 * rhs.v_20
+                + self.v_33 * rhs.v_30,
+            v_31: self.v_30 * rhs.v_01
+                + self.v_31 * rhs.v_11
+                + self.v_32 * rhs.v_21
+                + self.v_33 * rhs.v_31,
+            v_32: self.v_30 * rhs.v_02
+                + self.v_31 * rhs.v_12
+                + self.v_32 * rhs.v_22
+                + self.v_33 * rhs.v_32,
+            v_33: self.v_30 * rhs.v_03
+                + self.v_31 * rhs.v_13
+                + self.v_32 * rhs.v_23
+                + self.v_33 * rhs.v_33,
         }
     }
+}
 
+impl core::ops::Mul<Vec4<f32>> for Mat4<f32> {
+    type Output = Vec4<f32>;
+    fn mul(self, rhs: Vec4<f32>) -> Self::Output {
+        Vec4::<f32> {
+            x: self.v_00 * rhs.x + self.v_01 * rhs.y + self.v_02 * rhs.z + self.v_03 * rhs.w,
+            y: self.v_10 * rhs.x + self.v_11 * rhs.y + self.v_12 * rhs.z + self.v_13 * rhs.w,
+            z: self.v_20 * rhs.x + self.v_21 * rhs.y + self.v_22 * rhs.z + self.v_23 * rhs.w,
+            w: self.v_30 * rhs.x + self.v_31 * rhs.y + self.v_32 * rhs.z + self.v_33 * rhs.w,
+        }
+    }
+}
+
+impl core::ops::Mul<f32> for Mat4<f32> {
+    type Output = Mat4<f32>;
+    fn mul(self, rhs: f32) -> Self::Output {
+        Mat4::<f32> {
+            v_00: self.v_00 * rhs,
+            v_01: self.v_01 * rhs,
+            v_02: self.v_02 * rhs,
+            v_03: self.v_03 * rhs,
+            v_10: self.v_10 * rhs,
+            v_11: self.v_11 * rhs,
+            v_12: self.v_12 * rhs,
+            v_13: self.v_13 * rhs,
+            v_20: self.v_20 * rhs,
+            v_21: self.v_21 * rhs,
+            v_22: self.v_22 * rhs,
+            v_23: self.v_23 * rhs,
+            v_30: self.v_30 * rhs,
+            v_31: self.v_31 * rhs,
+            v_32: self.v_32 * rhs,
+            v_33: self.v_33 * rhs,
+        }
+    }
+}
+
+impl core::ops::MulAssign<Mat4<f32>> for Mat4<f32> {
+    fn mul_assign(&mut self, rhs: Mat4<f32>) {
+        self.v_00 = self.v_00 * rhs.v_00
+            + self.v_01 * rhs.v_10
+            + self.v_02 * rhs.v_20
+            + self.v_03 * rhs.v_30;
+        self.v_01 = self.v_00 * rhs.v_01
+            + self.v_01 * rhs.v_11
+            + self.v_02 * rhs.v_21
+            + self.v_03 * rhs.v_31;
+        self.v_02 = self.v_00 * rhs.v_02
+            + self.v_01 * rhs.v_12
+            + self.v_02 * rhs.v_22
+            + self.v_03 * rhs.v_32;
+        self.v_03 = self.v_00 * rhs.v_03
+            + self.v_01 * rhs.v_13
+            + self.v_02 * rhs.v_23
+            + self.v_03 * rhs.v_33;
+        self.v_10 = self.v_10 * rhs.v_00
+            + self.v_11 * rhs.v_10
+            + self.v_12 * rhs.v_20
+            + self.v_13 * rhs.v_30;
+        self.v_11 = self.v_10 * rhs.v_01
+            + self.v_11 * rhs.v_11
+            + self.v_12 * rhs.v_21
+            + self.v_13 * rhs.v_31;
+        self.v_12 = self.v_10 * rhs.v_02
+            + self.v_11 * rhs.v_12
+            + self.v_12 * rhs.v_22
+            + self.v_13 * rhs.v_32;
+        self.v_13 = self.v_10 * rhs.v_03
+            + self.v_11 * rhs.v_13
+            + self.v_12 * rhs.v_23
+            + self.v_13 * rhs.v_33;
+        self.v_20 = self.v_20 * rhs.v_00
+            + self.v_21 * rhs.v_10
+            + self.v_22 * rhs.v_20
+            + self.v_23 * rhs.v_30;
+        self.v_21 = self.v_20 * rhs.v_01
+            + self.v_21 * rhs.v_11
+            + self.v_22 * rhs.v_21
+            + self.v_23 * rhs.v_31;
+        self.v_22 = self.v_20 * rhs.v_02
+            + self.v_21 * rhs.v_12
+            + self.v_22 * rhs.v_22
+            + self.v_23 * rhs.v_32;
+        self.v_23 = self.v_20 * rhs.v_03
+            + self.v_21 * rhs.v_13
+            + self.v_22 * rhs.v_23
+            + self.v_23 * rhs.v_33;
+        self.v_30 = self.v_30 * rhs.v_00
+            + self.v_31 * rhs.v_10
+            + self.v_32 * rhs.v_20
+            + self.v_33 * rhs.v_30;
+        self.v_31 = self.v_30 * rhs.v_01
+            + self.v_31 * rhs.v_11
+            + self.v_32 * rhs.v_21
+            + self.v_33 * rhs.v_31;
+        self.v_32 = self.v_30 * rhs.v_02
+            + self.v_31 * rhs.v_12
+            + self.v_32 * rhs.v_22
+            + self.v_33 * rhs.v_32;
+        self.v_33 = self.v_30 * rhs.v_03
+            + self.v_31 * rhs.v_13
+            + self.v_32 * rhs.v_23
+            + self.v_33 * rhs.v_33;
+    }
+}
+
+impl core::ops::MulAssign<f32> for Mat4<f32> {
+    fn mul_assign(&mut self, rhs: f32) {
+        self.v_00 *= rhs;
+        self.v_01 *= rhs;
+        self.v_02 *= rhs;
+        self.v_03 *= rhs;
+        self.v_10 *= rhs;
+        self.v_11 *= rhs;
+        self.v_12 *= rhs;
+        self.v_13 *= rhs;
+        self.v_20 *= rhs;
+        self.v_21 *= rhs;
+        self.v_22 *= rhs;
+        self.v_23 *= rhs;
+        self.v_30 *= rhs;
+        self.v_31 *= rhs;
+        self.v_32 *= rhs;
+        self.v_33 *= rhs;
+    }
+}
+
+impl Mat4<f32> {
     /// Returns a new 4x4 identity matrix.
-    fn idt() -> Mat4<T> {
-        Mat4<T> {
-            v_00: 1,
-            v_01: 0,
-            v_02: 0,
-            v_03: 0,
-            v_10: 0,
-            v_11: 1,
-            v_12: 0,
-            v_13: 0,
-            v_20: 0,
-            v_21: 0,
-            v_22: 1,
-            v_23: 0,
-            v_30: 0,
-            v_31: 0,
-            v_32: 0,
-            v_33: 1,
+    pub fn idt() -> Mat4<f32> {
+        Mat4::<f32> {
+            v_00: 1.0,
+            v_01: 0.0,
+            v_02: 0.0,
+            v_03: 0.0,
+            v_10: 0.0,
+            v_11: 1.0,
+            v_12: 0.0,
+            v_13: 0.0,
+            v_20: 0.0,
+            v_21: 0.0,
+            v_22: 1.0,
+            v_23: 0.0,
+            v_30: 0.0,
+            v_31: 0.0,
+            v_32: 0.0,
+            v_33: 1.0,
         }
     }
 
     /// Creates a translation matrix.
-    fn translate(Vec3<T> vec) -> Mat4<T> {
-        Mat4<T> {
-            v_00: 0,
-            v_01: 0,
-            v_02: 0,
+    pub fn translate(vec: Vec3<f32>) -> Mat4<f32> {
+        Mat4::<f32> {
+            v_00: 0.0,
+            v_01: 0.0,
+            v_02: 0.0,
             v_03: vec.x,
-            v_10: 0,
-            v_11: 0,
-            v_12: 0,
+            v_10: 0.0,
+            v_11: 0.0,
+            v_12: 0.0,
             v_13: vec.y,
-            v_20: 0,
-            v_21: 0,
-            v_22: 0,
+            v_20: 0.0,
+            v_21: 0.0,
+            v_22: 0.0,
             v_23: vec.z,
-            v_30: 0,
-            v_31: 0,
-            v_32: 0,
-            v_33: 1,
+            v_30: 0.0,
+            v_31: 0.0,
+            v_32: 0.0,
+            v_33: 1.0,
         }
     }
 }
