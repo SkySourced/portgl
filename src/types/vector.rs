@@ -1,5 +1,4 @@
 use super::super::math::sqrt;
-use super::angle::Angle;
 
 /// Represents a 2D vector.
 pub struct Vec2<T> {

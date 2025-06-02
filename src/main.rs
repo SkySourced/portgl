@@ -13,6 +13,7 @@ use log::info;
 
 pub mod math;
 pub mod types;
+pub mod model;
 
 #[main]
 fn main() -> ! {
