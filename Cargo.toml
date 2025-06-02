@@ -24,6 +24,8 @@ esp-println = { version = "0.13.0", features = [
 ] }
 defmt = "1.0.1"
 log = "0.4.26"
+esp-alloc = "0.7.0"
+heapless = "0.8.0"
 
 [profile.dev]
 # Rust debug is too slow.

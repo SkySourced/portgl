@@ -194,7 +194,7 @@ impl Vec4<f32> {
             w: w
         }
     }
-    
+
     /// Calculates the length of this vector.
     pub fn len(&self) -> f32 {
         sqrt((self.x * self.x + self.y * self.y + self.z * self.z + self.w * self.w) as f32)

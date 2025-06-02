@@ -301,6 +301,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
 
 [[package]]
+name = "esp-alloc"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a78132d362cbf62ce22a1466eb9e98424f6b2d1e476e7a3cb46ca9063c5833f7"
+dependencies = [
+ "cfg-if",
+ "critical-section",
+ "document-features",
+ "enumset",
+ "linked_list_allocator",
+]
+
+[[package]]
 name = "esp-backtrace"
 version = "0.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -571,6 +584,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "linked_list_allocator"
+version = "0.10.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9afa463f5405ee81cdb9cc2baf37e08ec7e4c8209442b5d72c04cfb2cd6e6286"
+
+[[package]]
 name = "litrs"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -663,9 +682,11 @@ version = "0.1.0"
 dependencies = [
  "critical-section",
  "defmt 1.0.1",
+ "esp-alloc",
  "esp-backtrace",
  "esp-hal",
  "esp-println",
+ "heapless",
  "log",
 ]
 
