@@ -33,6 +33,8 @@ fn main() -> ! {
 
     info!("Beginning loop");
 
+    let model = crate::model::model::from_obj(crate::model::TEAPOT_OBJ);
+
     loop {
         led.toggle();
         let delay_start = Instant::now();

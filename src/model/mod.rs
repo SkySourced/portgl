@@ -1,6 +1,6 @@
 pub mod model;
 
-const TEAPOT_OBJ: &str = "v 3.5 6 -2.62268e-07
+pub const TEAPOT_OBJ: &str = "v 3.5 6 -2.62268e-07
 v 3.45492 6 0.57428
 v 3.42019 6.08859 0.568506
 v 3.46481 6.08859 -2.66183e-07
