@@ -1,5 +1,6 @@
 use super::vector::{Vec3, Vec4};
 
+#[derive(Copy, Clone)]
 /// Represents a 4x4 matrix.
 /// Structure:
 // [v_00 v_01 v_02 v_03]
@@ -265,6 +266,12 @@ impl core::ops::MulAssign<f32> for Mat4<f32> {
         self.v_31 *= rhs;
         self.v_32 *= rhs;
         self.v_33 *= rhs;
+    }
+}
+
+impl core::fmt::Debug for Mat4<f32> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.debug_struct("FloatMat4").field("v_00", &self.v_00).field("v_01", &self.v_01).field("v_02", &self.v_02).field("v_03", &self.v_03).field("v_10", &self.v_10).field("v_11", &self.v_11).field("v_12", &self.v_12).field("v_13", &self.v_13).field("v_20", &self.v_20).field("v_21", &self.v_21).field("v_22", &self.v_22).field("v_23", &self.v_23).field("v_30", &self.v_30).field("v_31", &self.v_31).field("v_32", &self.v_32).field("v_33", &self.v_33).finish()
     }
 }
 

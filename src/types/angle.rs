@@ -1,4 +1,4 @@
-use core::f32::consts::PI;
+use core::{f32::consts::PI, fmt::Debug};
 
 const SINES: [f32; 1571] = [
     0.0,
@@ -1574,9 +1574,16 @@ const SINES: [f32; 1571] = [
     0.9999996829318346,
 ];
 
+#[derive(Copy, Clone)]
 /// Represents an angle.
 pub struct Angle {
     pub rad: f32,
+}
+
+impl core::fmt::Debug for Angle {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.debug_struct("Angle").field("rad", &self.rad).finish()
+    }
 }
 
 impl Angle {

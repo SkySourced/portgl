@@ -1,5 +1,6 @@
 use super::super::math::sqrt;
 
+#[derive(Copy, Clone)]
 /// Represents a 2D vector.
 pub struct Vec2<T> {
     pub x: T,
@@ -33,6 +34,15 @@ impl core::ops::Mul<f32> for Vec2<f32> {
     }
 }
 
+impl core::fmt::Debug for Vec2<f32> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.debug_struct("FloatVec2")
+        .field("x", &self.x)
+        .field("y", &self.y)
+        .finish()        
+    }
+}
+
 impl Vec2<f32> {
     /// Computes the dot/inner/scalar product of the two vectors provided.
     pub fn dot(v1: Vec2<f32>, v2: Vec2<f32>) -> f32 {
@@ -53,6 +63,7 @@ impl Vec2<f32> {
     }
 }
 
+#[derive(Copy, Clone)]
 /// Represents a 3D vector.
 pub struct Vec3<T> {
     pub x: T,
@@ -87,6 +98,16 @@ impl core::ops::Mul<f32> for Vec3<f32> {
             y: self.y * rhs,
             z: self.z * rhs,
         }
+    }
+}
+
+impl core::fmt::Debug for Vec3<f32> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.debug_struct("FloatVec3")
+        .field("x", &self.x)
+        .field("y", &self.y)
+        .field("z", &self.z)
+        .finish()        
     }
 }
 
@@ -129,6 +150,7 @@ impl Vec3<f32> {
     }
 }
 
+#[derive(Copy, Clone)]
 /// Represents a 4D vector. Frequently used for homogenous coordinates.
 pub struct Vec4<T> {
     pub x: T,
@@ -167,6 +189,17 @@ impl core::ops::Mul<f32> for Vec4<f32> {
             z: self.z * rhs,
             w: self.w * rhs,
         }
+    }
+}
+
+impl core::fmt::Debug for Vec4<f32> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.debug_struct("FloatVec4")
+        .field("x", &self.x)
+        .field("y", &self.y)
+        .field("z", &self.z)
+        .field("w", &self.w)
+        .finish()
     }
 }
 
