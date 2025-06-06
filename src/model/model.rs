@@ -1,14 +1,16 @@
 use crate::types::vector::{Vec2, Vec3};
-use core::fmt::Write;
+use core::fmt::{Debug, Write};
 use heapless::Vec;
 use log::info;
 
+#[derive(Debug)]
 /// Represents a 3D model.
-pub struct Model<'a> {
+pub struct Model {
     pub verts: Vec<VertexData, 4096>,
-    pub faces: Vec<FaceData<'a>, 8192>,
+    pub faces: Vec<FaceData, 8192>,
 }
 
+#[derive(Debug, Clone, Copy)]
 /// Represents a vertex. Contains
 /// model-space position, texture
 /// coordinates, and normals.
@@ -18,84 +20,43 @@ pub struct VertexData {
     pub normal: Vec3<f32>,
 }
 
-impl core::fmt::Debug for VertexData {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        f.debug_struct("VertexData")
-            .field("pos", &self.pos)
-            .field("tex_coords", &self.tex_coords)
-            .field("normal", &self.normal)
-            .finish()
-    }
-}
-
+#[derive(Debug, Clone, Copy)]
 /// Represents a face. Contains
-/// 3 composing vertices.
-pub struct FaceData<'a> {
-    pub verts: [&'a VertexData; 3],
+/// indices of 3 composing vertices.
+pub struct FaceData {
+    pub verts: [usize; 3],
 }
 
-impl<'a> FaceData<'a> {
+impl FaceData {
     /// Creates a new face initialized to all zeroes.
-    pub fn new() -> FaceData<'a> {
-        FaceData {
-            verts: [
-                &VertexData {
-                    pos: Vec3 {
-                        x: 0.0,
-                        y: 0.0,
-                        z: 0.0,
-                    },
-                    tex_coords: Vec2 { x: 0.0, y: 0.0 },
-                    normal: Vec3 {
-                        x: 0.0,
-                        y: 0.0,
-                        z: 0.0,
-                    },
-                },
-                &VertexData {
-                    pos: Vec3 {
-                        x: 0.0,
-                        y: 0.0,
-                        z: 0.0,
-                    },
-                    tex_coords: Vec2 { x: 0.0, y: 0.0 },
-                    normal: Vec3 {
-                        x: 0.0,
-                        y: 0.0,
-                        z: 0.0,
-                    },
-                },
-                &VertexData {
-                    pos: Vec3 {
-                        x: 0.0,
-                        y: 0.0,
-                        z: 0.0,
-                    },
-                    tex_coords: Vec2 { x: 0.0, y: 0.0 },
-                    normal: Vec3 {
-                        x: 0.0,
-                        y: 0.0,
-                        z: 0.0,
-                    },
-                },
-            ],
-        }
+    pub fn new() -> FaceData {
+        FaceData { verts: [0, 0, 0] }
     }
 }
 
 /// Creates a Model from an OBJ
 /// file.
 pub fn from_obj(obj_file: &str) -> Model {
+    info!("Creating model");
+
     let mut points: Vec<Vec3<f32>, 4096> = Vec::new();
     let mut normals: Vec<Vec3<f32>, 4096> = Vec::new();
     let mut tex_coords: Vec<Vec2<f32>, 4096> = Vec::new();
 
+    info!("Created vecs");
+
     let mut lines: core::str::Split<'_, &'static str> = obj_file.split("\n");
+
+    info!("Split lines");
 
     let mut vertices: Vec<VertexData, 4096> = Vec::new();
     let mut faces: Vec<FaceData, 8192> = Vec::new();
 
+    info!("Created vecs 2");
+
     let mut context = heapless::String::<16>::new();
+
+    info!("Created context");
 
     while let Some(i) = lines.next() {
         info!("{:?}", i);
@@ -177,38 +138,34 @@ pub fn from_obj(obj_file: &str) -> Model {
                 let tex_coord_index: usize = parse_size(vertex_components.next(), &context);
                 let normal_index: usize = parse_size(vertex_components.next(), &context);
 
-                face.verts[i] = match get_vertex(
-                    point_index,
-                    tex_coord_index,
-                    normal_index,
-                    &points,
-                    &tex_coords,
-                    &normals,
-                    &vertices,
-                ) {
+                let vertex_in_array = {
+                    get_vertex(
+                        point_index,
+                        tex_coord_index,
+                        normal_index,
+                        &points,
+                        &tex_coords,
+                        &normals,
+                        &vertices,
+                    )
+                };
+
+                face.verts[i] = match vertex_in_array {
                     Some(i) => i,
                     None => {
-                        vertices.push(VertexData {
-                            pos: points[point_index].clone(),
-                            tex_coords: tex_coords[tex_coord_index].clone(),
-                            normal: normals[normal_index].clone(),
-                        });
-                        &vertices
-                            .last()
-                            .expect("there should be a vertex to retrieve")
+                        vertices
+                            .push(VertexData {
+                                pos: points[point_index].clone(),
+                                tex_coords: tex_coords[tex_coord_index].clone(),
+                                normal: normals[normal_index].clone(),
+                            })
+                            .expect("model should not contain more than 4096 unique vertices");
+                        vertices.len() - 1
                     }
-                }
-
-                // //TODO: repeating vertices
-                // vertices
-                //     .push(VertexData {
-                //         pos: points[parse_size(vertex_components.next(), &context)],
-                //         tex_coords: tex_coords[parse_size(vertex_components.next(), &context)],
-                //         normal: normals[parse_size(vertex_components.next(), &context)],
-                //     })
-                //     .expect("faces should only have three vertices");
-                // face.verts[i] = vertices.last().expect("vertex array should not be empty")
+                };
             }
+
+            faces.push(face).expect("model should not contain more than 8192 unique faces");
         }
     }
 
@@ -242,35 +199,32 @@ fn parse_size(word: Option<&'_ str>, context: &heapless::String<16>) -> usize {
 }
 
 ///
-fn get_vertex<'a>(
+fn get_vertex(
     point_index: usize,
     tex_coord_index: usize,
     normal_index: usize,
     points: &Vec<Vec3<f32>, 4096>,
     tex_coords: &Vec<Vec2<f32>, 4096>,
     normals: &Vec<Vec3<f32>, 4096>,
-    vertices: &'a Vec<VertexData, 4096>,
-) -> Option<&'a VertexData> {
-    let given_point: Vec3<f32> = points[point_index];
-    let given_tex_coord: Vec2<f32> = tex_coords[tex_coord_index];
-    let given_normal: Vec3<f32> = normals[normal_index];
+    vertices: &Vec<VertexData, 4096>,
+) -> Option<usize> {
+    let given_point = points[point_index];
+    let given_tex_coord = tex_coords[tex_coord_index];
+    let given_normal = normals[normal_index];
 
-    let matching_points = vertices.iter().filter(|v: &&VertexData| {
-        v.pos == given_point && v.tex_coords == given_tex_coord && v.normal == given_normal
-    });
-    let num_matched_points = matching_points.clone().count();
-    if num_matched_points > 1 {
-        panic!(
-            "more than one matching point for {:?} {:?} {:?}",
-            given_point, given_tex_coord, given_normal
-        )
-    } else if num_matched_points == 1 {
-        Some(
-            matching_points
-                .last()
-                .expect("should be at least one matched point"),
-        )
-    } else {
-        None
+    let mut matched_index = None;
+
+    for (i, v) in vertices.iter().enumerate() {
+        if v.pos == given_point && v.tex_coords == given_tex_coord && v.normal == given_normal {
+            if matched_index.is_some() {
+                panic!(
+                    "more than one matching point for {:?} {:?} {:?}",
+                    given_point, given_tex_coord, given_normal
+                );
+            }
+            matched_index = Some(i);
+        }
     }
+
+    matched_index
 }

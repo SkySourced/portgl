@@ -2,12 +2,12 @@
 #![no_main]
 
 use esp_alloc as _;
+use esp_backtrace as _;
 use esp_hal::clock::CpuClock;
 use esp_hal::gpio::Level;
 use esp_hal::gpio::Output;
 use esp_hal::gpio::OutputConfig;
 use esp_hal::main;
-use esp_hal::time::{Duration, Instant};
 use esp_println as _;
 use log::info;
 
@@ -26,14 +26,16 @@ fn main() -> ! {
 
     led.set_high();
 
+    info!("{:?}", crate::model::CUBE_OBJ);
+
     info!("Beginning loop");
 
-    let model = crate::model::model::from_obj(crate::model::TEAPOT_OBJ);
+    let _model = crate::model::model::from_obj(&crate::model::CUBE_OBJ);
+
+    info!("Loaded model");
 
     loop {
-        led.toggle();
-        let delay_start = Instant::now();
-        while delay_start.elapsed() < Duration::from_millis(5) {}
+
     }
 
     // for inspiration have a look at the examples at https://github.com/esp-rs/esp-hal/tree/esp-hal-v1.0.0-beta.0/examples/src/bin
