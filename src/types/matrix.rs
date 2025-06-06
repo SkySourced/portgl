@@ -1,4 +1,6 @@
 use super::vector::{Vec3, Vec4};
+use core::fmt::{Debug, Formatter, Result};
+use core::ops::{Add, AddAssign, Mul, MulAssign};
 
 #[derive(Copy, Clone)]
 /// Represents a 4x4 matrix.
@@ -26,7 +28,7 @@ pub struct Mat4<T> {
     pub v_33: T,
 }
 
-impl core::ops::Add<Mat4<f32>> for Mat4<f32> {
+impl Add<Mat4<f32>> for Mat4<f32> {
     type Output = Mat4<f32>;
     fn add(self, rhs: Mat4<f32>) -> Self::Output {
         Mat4::<f32> {
@@ -50,7 +52,7 @@ impl core::ops::Add<Mat4<f32>> for Mat4<f32> {
     }
 }
 
-impl core::ops::AddAssign<Mat4<f32>> for Mat4<f32> {
+impl AddAssign<Mat4<f32>> for Mat4<f32> {
     fn add_assign(&mut self, rhs: Mat4<f32>) {
         self.v_00 += rhs.v_00;
         self.v_01 += rhs.v_01;
@@ -71,7 +73,7 @@ impl core::ops::AddAssign<Mat4<f32>> for Mat4<f32> {
     }
 }
 
-impl core::ops::Mul<Mat4<f32>> for Mat4<f32> {
+impl Mul<Mat4<f32>> for Mat4<f32> {
     type Output = Mat4<f32>;
     fn mul(self, rhs: Mat4<f32>) -> Self::Output {
         Mat4::<f32> {
@@ -143,7 +145,7 @@ impl core::ops::Mul<Mat4<f32>> for Mat4<f32> {
     }
 }
 
-impl core::ops::Mul<Vec4<f32>> for Mat4<f32> {
+impl Mul<Vec4<f32>> for Mat4<f32> {
     type Output = Vec4<f32>;
     fn mul(self, rhs: Vec4<f32>) -> Self::Output {
         Vec4::<f32> {
@@ -155,7 +157,7 @@ impl core::ops::Mul<Vec4<f32>> for Mat4<f32> {
     }
 }
 
-impl core::ops::Mul<f32> for Mat4<f32> {
+impl Mul<f32> for Mat4<f32> {
     type Output = Mat4<f32>;
     fn mul(self, rhs: f32) -> Self::Output {
         Mat4::<f32> {
@@ -179,7 +181,7 @@ impl core::ops::Mul<f32> for Mat4<f32> {
     }
 }
 
-impl core::ops::MulAssign<Mat4<f32>> for Mat4<f32> {
+impl MulAssign<Mat4<f32>> for Mat4<f32> {
     fn mul_assign(&mut self, rhs: Mat4<f32>) {
         self.v_00 = self.v_00 * rhs.v_00
             + self.v_01 * rhs.v_10
@@ -248,7 +250,7 @@ impl core::ops::MulAssign<Mat4<f32>> for Mat4<f32> {
     }
 }
 
-impl core::ops::MulAssign<f32> for Mat4<f32> {
+impl MulAssign<f32> for Mat4<f32> {
     fn mul_assign(&mut self, rhs: f32) {
         self.v_00 *= rhs;
         self.v_01 *= rhs;
@@ -269,9 +271,26 @@ impl core::ops::MulAssign<f32> for Mat4<f32> {
     }
 }
 
-impl core::fmt::Debug for Mat4<f32> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        f.debug_struct("FloatMat4").field("v_00", &self.v_00).field("v_01", &self.v_01).field("v_02", &self.v_02).field("v_03", &self.v_03).field("v_10", &self.v_10).field("v_11", &self.v_11).field("v_12", &self.v_12).field("v_13", &self.v_13).field("v_20", &self.v_20).field("v_21", &self.v_21).field("v_22", &self.v_22).field("v_23", &self.v_23).field("v_30", &self.v_30).field("v_31", &self.v_31).field("v_32", &self.v_32).field("v_33", &self.v_33).finish()
+impl Debug for Mat4<f32> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        f.debug_struct("FloatMat4")
+            .field("v_00", &self.v_00)
+            .field("v_01", &self.v_01)
+            .field("v_02", &self.v_02)
+            .field("v_03", &self.v_03)
+            .field("v_10", &self.v_10)
+            .field("v_11", &self.v_11)
+            .field("v_12", &self.v_12)
+            .field("v_13", &self.v_13)
+            .field("v_20", &self.v_20)
+            .field("v_21", &self.v_21)
+            .field("v_22", &self.v_22)
+            .field("v_23", &self.v_23)
+            .field("v_30", &self.v_30)
+            .field("v_31", &self.v_31)
+            .field("v_32", &self.v_32)
+            .field("v_33", &self.v_33)
+            .finish()
     }
 }
 

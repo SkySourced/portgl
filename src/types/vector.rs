@@ -1,4 +1,6 @@
 use super::super::math::sqrt;
+use core::fmt::{Debug, Formatter, Result};
+use core::ops::{Add, AddAssign, Mul, MulAssign};
 
 #[derive(Copy, Clone)]
 /// Represents a 2D vector.
@@ -7,7 +9,7 @@ pub struct Vec2<T> {
     pub y: T,
 }
 
-impl core::ops::Add<Vec2<f32>> for Vec2<f32> {
+impl Add<Vec2<f32>> for Vec2<f32> {
     type Output = Vec2<f32>;
     fn add(self, rhs: Vec2<f32>) -> Self::Output {
         Vec2::<f32> {
@@ -17,14 +19,14 @@ impl core::ops::Add<Vec2<f32>> for Vec2<f32> {
     }
 }
 
-impl core::ops::AddAssign<Vec2<f32>> for Vec2<f32> {
+impl AddAssign<Vec2<f32>> for Vec2<f32> {
     fn add_assign(&mut self, rhs: Vec2<f32>) {
         self.x += rhs.x;
         self.y += rhs.y;
     }
 }
 
-impl core::ops::Mul<f32> for Vec2<f32> {
+impl Mul<f32> for Vec2<f32> {
     type Output = Vec2<f32>;
     fn mul(self, rhs: f32) -> Self::Output {
         Vec2::<f32> {
@@ -34,12 +36,25 @@ impl core::ops::Mul<f32> for Vec2<f32> {
     }
 }
 
-impl core::fmt::Debug for Vec2<f32> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+impl MulAssign<f32> for Vec2<f32> {
+    fn mul_assign(&mut self, rhs: f32) {
+        self.x *= rhs;
+        self.y *= rhs;
+    }
+}
+
+impl PartialEq for Vec2<f32> {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
+    }
+}
+
+impl Debug for Vec2<f32> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.debug_struct("FloatVec2")
-        .field("x", &self.x)
-        .field("y", &self.y)
-        .finish()        
+            .field("x", &self.x)
+            .field("y", &self.y)
+            .finish()
     }
 }
 
@@ -71,7 +86,7 @@ pub struct Vec3<T> {
     pub z: T,
 }
 
-impl core::ops::Add<Vec3<f32>> for Vec3<f32> {
+impl Add<Vec3<f32>> for Vec3<f32> {
     type Output = Vec3<f32>;
     fn add(self, rhs: Vec3<f32>) -> Self::Output {
         Vec3::<f32> {
@@ -82,7 +97,7 @@ impl core::ops::Add<Vec3<f32>> for Vec3<f32> {
     }
 }
 
-impl core::ops::AddAssign<Vec3<f32>> for Vec3<f32> {
+impl AddAssign<Vec3<f32>> for Vec3<f32> {
     fn add_assign(&mut self, rhs: Vec3<f32>) {
         self.x += rhs.x;
         self.y += rhs.y;
@@ -90,7 +105,7 @@ impl core::ops::AddAssign<Vec3<f32>> for Vec3<f32> {
     }
 }
 
-impl core::ops::Mul<f32> for Vec3<f32> {
+impl Mul<f32> for Vec3<f32> {
     type Output = Vec3<f32>;
     fn mul(self, rhs: f32) -> Self::Output {
         Vec3::<f32> {
@@ -101,13 +116,27 @@ impl core::ops::Mul<f32> for Vec3<f32> {
     }
 }
 
-impl core::fmt::Debug for Vec3<f32> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+impl MulAssign<f32> for Vec3<f32> {
+    fn mul_assign(&mut self, rhs: f32) {
+        self.x *= rhs;
+        self.y *= rhs;
+        self.z *= rhs;
+    }
+}
+
+impl PartialEq for Vec3<f32> {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y && self.z == other.z
+    }
+}
+
+impl Debug for Vec3<f32> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.debug_struct("FloatVec3")
-        .field("x", &self.x)
-        .field("y", &self.y)
-        .field("z", &self.z)
-        .finish()        
+            .field("x", &self.x)
+            .field("y", &self.y)
+            .field("z", &self.z)
+            .finish()
     }
 }
 
@@ -159,7 +188,7 @@ pub struct Vec4<T> {
     pub w: T,
 }
 
-impl core::ops::Add<Vec4<f32>> for Vec4<f32> {
+impl Add<Vec4<f32>> for Vec4<f32> {
     type Output = Vec4<f32>;
     fn add(self, rhs: Vec4<f32>) -> Self::Output {
         Vec4::<f32> {
@@ -171,7 +200,7 @@ impl core::ops::Add<Vec4<f32>> for Vec4<f32> {
     }
 }
 
-impl core::ops::AddAssign<Vec4<f32>> for Vec4<f32> {
+impl AddAssign<Vec4<f32>> for Vec4<f32> {
     fn add_assign(&mut self, rhs: Vec4<f32>) {
         self.x += rhs.x;
         self.y += rhs.y;
@@ -180,7 +209,7 @@ impl core::ops::AddAssign<Vec4<f32>> for Vec4<f32> {
     }
 }
 
-impl core::ops::Mul<f32> for Vec4<f32> {
+impl Mul<f32> for Vec4<f32> {
     type Output = Vec4<f32>;
     fn mul(self, rhs: f32) -> Self::Output {
         Vec4::<f32> {
@@ -192,14 +221,23 @@ impl core::ops::Mul<f32> for Vec4<f32> {
     }
 }
 
-impl core::fmt::Debug for Vec4<f32> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+impl MulAssign<f32> for Vec4<f32> {
+    fn mul_assign(&mut self, rhs: f32) {
+        self.x *= rhs;
+        self.y *= rhs;
+        self.z *= rhs;
+        self.w *= rhs;
+    }
+}
+
+impl Debug for Vec4<f32> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.debug_struct("FloatVec4")
-        .field("x", &self.x)
-        .field("y", &self.y)
-        .field("z", &self.z)
-        .field("w", &self.w)
-        .finish()
+            .field("x", &self.x)
+            .field("y", &self.y)
+            .field("z", &self.z)
+            .field("w", &self.w)
+            .finish()
     }
 }
 
@@ -224,7 +262,7 @@ impl Vec4<f32> {
             x: vec3.x,
             y: vec3.y,
             z: vec3.z,
-            w: w
+            w: w,
         }
     }
 
@@ -241,5 +279,11 @@ impl Vec4<f32> {
         self.z /= len;
         self.w /= len;
         self
+    }
+}
+
+impl PartialEq for Vec4<f32> {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y && self.z == other.z && self.w == other.w
     }
 }

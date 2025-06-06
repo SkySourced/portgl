@@ -1580,7 +1580,7 @@ pub struct Angle {
     pub rad: f32,
 }
 
-impl core::fmt::Debug for Angle {
+impl Debug for Angle {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_struct("Angle").field("rad", &self.rad).finish()
     }
@@ -1604,7 +1604,7 @@ impl Angle {
         sin(self.rad)
     }
 
-    /// Returns the cosine of the angle. 
+    /// Returns the cosine of the angle.
     pub fn cos(&self) -> f32 {
         cos(self.rad)
     }
@@ -1636,7 +1636,6 @@ pub fn sin(mut rad: f32) -> f32 {
         } else {
             n2 = SINES[index + 1];
         }
-
     } else if rad == PI / 2.0 {
         return 1.0;
     } else if rad < PI {
