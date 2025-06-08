@@ -11,6 +11,7 @@ use esp_hal::main;
 use esp_println as _;
 use log::info;
 
+pub mod display;
 pub mod math;
 pub mod model;
 pub mod types;
@@ -22,7 +23,7 @@ fn main() -> ! {
     let config = esp_hal::Config::default().with_cpu_clock(CpuClock::max());
     let _peripherals = esp_hal::init(config);
 
-    let mut led = Output::new(_peripherals.GPIO7, Level::Low, OutputConfig::default());
+    let mut led: Output<'_> = Output::new(_peripherals.GPIO7, Level::Low, OutputConfig::default());
 
     led.set_high();
 
@@ -34,9 +35,7 @@ fn main() -> ! {
 
     info!("Loaded model");
 
-    loop {
-
-    }
+    loop {}
 
     // for inspiration have a look at the examples at https://github.com/esp-rs/esp-hal/tree/esp-hal-v1.0.0-beta.0/examples/src/bin
 }
