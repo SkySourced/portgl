@@ -1,15 +1,12 @@
 #![no_std]
 #![no_main]
 
-use esp_alloc as _;
+use defmt::info;
 use esp_backtrace as _;
 use esp_hal::clock::CpuClock;
-use esp_hal::gpio::Level;
-use esp_hal::gpio::Output;
-use esp_hal::gpio::OutputConfig;
 use esp_hal::main;
 use esp_println as _;
-use log::info;
+use {esp_backtrace as _, esp_println as _};
 
 pub mod display;
 pub mod math;
@@ -22,10 +19,6 @@ fn main() -> ! {
 
     let config = esp_hal::Config::default().with_cpu_clock(CpuClock::max());
     let _peripherals = esp_hal::init(config);
-
-    let mut led: Output<'_> = Output::new(_peripherals.GPIO7, Level::Low, OutputConfig::default());
-
-    led.set_high();
 
     info!("{:?}", crate::model::CUBE_OBJ);
 
