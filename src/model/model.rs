@@ -14,9 +14,7 @@ pub struct Model {
 
 impl Model {
     /// Renders a copy of this model to the screen at a given world-space position.
-    pub fn render(&self, pos: Vec3<f32>) {
-
-    }
+    pub fn render(&self, pos: Vec3<f32>) {}
 }
 
 #[derive(Clone, Copy, Format)]
@@ -164,7 +162,10 @@ pub fn from_obj(obj_file: &str) -> Model {
                 face.verts[i] = match vertex_in_array {
                     Some(i) => i,
                     None => {
-                        info!("Adding vertex with indices {:?} {:?} {:?}", point_index, tex_coord_index, normal_index);
+                        info!(
+                            "Adding vertex with indices {:?} {:?} {:?}",
+                            point_index, tex_coord_index, normal_index
+                        );
                         defmt::expect!(
                             vertices.push(VertexData {
                                 pos: points[point_index - 1].clone(),
@@ -182,10 +183,7 @@ pub fn from_obj(obj_file: &str) -> Model {
                 .push(face)
                 .expect("model should not contain more than 8192 unique faces");
 
-            info!(
-                "Added face {}",
-                faces.last().unwrap().verts
-            )
+            info!("Added face {}", faces.last().unwrap().verts)
         }
     }
 

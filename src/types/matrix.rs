@@ -1,4 +1,5 @@
 use super::vector::{Vec3, Vec4};
+use crate::types::quat::Quaternion;
 use core::fmt::{Debug, Formatter, Result};
 use core::ops::{Add, AddAssign, Mul, MulAssign};
 
@@ -318,8 +319,8 @@ impl Mat4<f32> {
     }
 
     /// Creates a transformation matrix.
-    pub fn transform(trn: Vec3<f32>, rot: Quaternion, scl: f32) {
-        
+    pub fn transform(trn: Vec3<f32>, rot: Quaternion, scl: f32) -> Mat4<f32> {
+        Self::translate(trn) * Self::rotate(rot) * Self::scale(scl)
     }
 
     /// Creates a translation matrix.
@@ -342,5 +343,33 @@ impl Mat4<f32> {
             v_32: 0.0,
             v_33: 1.0,
         }
+    }
+
+    /// Creates a rotation matrix.
+    pub fn rotate(quat: Quaternion) -> Mat4<f32> {
+        let q = *(quat.clone()).nor();
+        Mat4 {
+            v_00: 1.0 - 2.0 * (q.j * q.j + q.k * q.k),
+            v_01: 2.0 * (q.i * q.j - q.k * q.a),
+            v_02: 2.0 * (q.i * q.k + q.j * q.a),
+            v_03: 1.0,
+            v_10: 2.0 * (q.i * q.j + q.k * q.a),
+            v_11: 1.0 - 2.0 * (q.i * q.i + q.k * q.k),
+            v_12: 2.0 * (q.j * q.k - q.i * q.a),
+            v_13: 1.0,
+            v_20: 2.0 * (q.i * q.k - q.j * q.a),
+            v_21: 2.0 * (q.j * q.k + q.i * q.a),
+            v_22: 1.0 - 2.0 * (q.i * q.i * q.j * q.j),
+            v_23: 1.0,
+            v_30: 0.0,
+            v_31: 0.0,
+            v_32: 0.0,
+            v_33: 0.0,
+        }
+    }
+
+    /// Creates a uniform scaling matrix.
+    pub fn scale(scl: f32) -> Mat4<f32> {
+        Self::idt() * scl
     }
 }

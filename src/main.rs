@@ -6,8 +6,8 @@ use esp_backtrace as _;
 use esp_hal::clock::CpuClock;
 use esp_hal::main;
 use esp_println as _;
-use {esp_backtrace as _, esp_println as _};
 use types::vector::VEC3_ZERO;
+use {esp_backtrace as _, esp_println as _};
 
 pub mod display;
 pub mod math;
@@ -32,9 +32,7 @@ fn main() -> ! {
 
     model.render(VEC3_ZERO);
 
-    loop {
-
-    }
+    loop {}
 
     // for inspiration have a look at the examples at https://github.com/esp-rs/esp-hal/tree/esp-hal-v1.0.0-beta.0/examples/src/bin
 }
