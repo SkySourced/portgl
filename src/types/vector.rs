@@ -2,6 +2,21 @@ use super::super::math::sqrt;
 use core::ops::{Add, AddAssign, Mul, MulAssign};
 use defmt::Format;
 
+pub const VEC2_ZERO: Vec2<f32> = Vec2 {x:0.0, y:0.0};
+pub const VEC2_X: Vec2<f32> = Vec2 {x:1.0, y:0.0};
+pub const VEC2_Y: Vec2<f32> = Vec2 {x:0.0, y:1.0};
+
+pub const VEC3_ZERO: Vec3<f32> = Vec3 {x:0.0, y:0.0, z: 0.0};
+pub const VEC3_X: Vec3<f32> = Vec3 {x:1.0, y:0.0, z: 0.0};
+pub const VEC3_Y: Vec3<f32> = Vec3 {x:0.0, y:1.0, z: 0.0};
+pub const VEC3_Z: Vec3<f32> = Vec3 {x:0.0, y:0.0, z: 1.0};
+
+pub const VEC4_ZERO: Vec4<f32> = Vec4 {x:0.0, y:0.0, z: 0.0, w: 0.0};
+pub const VEC4_X: Vec4<f32> = Vec4 {x:1.0, y:0.0, z: 0.0, w: 0.0};
+pub const VEC4_Y: Vec4<f32> = Vec4 {x:0.0, y:1.0, z: 0.0, w: 0.0};
+pub const VEC4_Z: Vec4<f32> = Vec4 {x:0.0, y:0.0, z: 1.0, w: 0.0};
+pub const VEC4_W: Vec4<f32> = Vec4 {x:0.0, y:0.0, z: 0.0, w: 1.0};
+
 #[derive(Debug, Copy, Clone, Format)]
 /// Represents a 2D vector.
 pub struct Vec2<T> {

@@ -12,6 +12,13 @@ pub struct Model {
     pub faces: Vec<FaceData, NUM_FACES>,
 }
 
+impl Model {
+    /// Renders a copy of this model to the screen at a given world-space position.
+    pub fn render(&self, pos: Vec3<f32>) {
+
+    }
+}
+
 #[derive(Clone, Copy, Format)]
 /// Represents a vertex. Contains
 /// model-space position, texture
@@ -33,11 +40,6 @@ impl FaceData {
     /// Creates a new face initialized to all zeroes.
     pub fn new() -> FaceData {
         FaceData { verts: [0, 0, 0] }
-    }
-
-    /// Renders a copy of this model to the screen at a given world-space position.
-    pub fn render(&self, pos: Vec3<f32>) {
-
     }
 }
 

@@ -1,4 +1,7 @@
-use esp_hal::{gpio::{Level, Output, OutputConfig, OutputPin}, peripheral::Peripheral};
+use esp_hal::{
+    gpio::{Level, Output, OutputConfig, OutputPin},
+    peripheral::Peripheral,
+};
 
 /// Manages a single TMDS (transition-minimised
 /// differential signaling) pair.
@@ -9,11 +12,14 @@ pub struct TMDS<'a> {
 }
 
 impl<'a> TMDS<'a> {
-    pub fn new(pin_nor: impl Peripheral<P = impl OutputPin> + 'a, pin_inv: impl Peripheral<P = impl OutputPin> + 'a) -> Self {
-        TMDS { 
-            pin_nor: Output::new(pin_nor, Level::Low, OutputConfig::default()), 
-            pin_inv: Output::new(pin_inv, Level::Low, OutputConfig::default()), 
-            prev_disparity: 0 
+    pub fn new(
+        pin_nor: impl Peripheral<P = impl OutputPin> + 'a,
+        pin_inv: impl Peripheral<P = impl OutputPin> + 'a,
+    ) -> Self {
+        TMDS {
+            pin_nor: Output::new(pin_nor, Level::Low, OutputConfig::default()),
+            pin_inv: Output::new(pin_inv, Level::Low, OutputConfig::default()),
+            prev_disparity: 0,
         }
     }
 

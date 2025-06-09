@@ -8,5 +8,5 @@ pub struct DviInterface<'a> {
     red_link: TMDS<'a>,
     green_link: TMDS<'a>,
     blue_link: TMDS<'a>,
-    clock: &'a TMDS<'a>
+    clock: &'a TMDS<'a>,
 }

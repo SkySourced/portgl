@@ -317,6 +317,11 @@ impl Mat4<f32> {
         }
     }
 
+    /// Creates a transformation matrix.
+    pub fn transform(trn: Vec3<f32>, rot: Quaternion, scl: f32) {
+        
+    }
+
     /// Creates a translation matrix.
     pub fn translate(vec: Vec3<f32>) -> Mat4<f32> {
         Mat4::<f32> {
