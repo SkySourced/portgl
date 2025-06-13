@@ -1,5 +1,5 @@
 use super::super::math::sqrt;
-use core::ops::{Add, AddAssign, Mul, MulAssign};
+use core::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub};
 use defmt::Format;
 
 pub const VEC2_ZERO: Vec2<f32> = Vec2 { x: 0.0, y: 0.0 };
@@ -152,6 +152,18 @@ impl AddAssign<Vec3<f32>> for Vec3<f32> {
     }
 }
 
+impl Sub<Vec3<f32>> for Vec3<f32> {
+    type Output = Vec3<f32>;
+
+    fn sub(self, rhs: Vec3<f32>) -> Self::Output {
+        Vec3::<f32> {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
+    }
+}
+
 impl Mul<f32> for Vec3<f32> {
     type Output = Vec3<f32>;
     fn mul(self, rhs: f32) -> Self::Output {
@@ -168,6 +180,14 @@ impl MulAssign<f32> for Vec3<f32> {
         self.x *= rhs;
         self.y *= rhs;
         self.z *= rhs;
+    }
+}
+
+impl Neg for Vec3<f32> {
+    type Output = Vec3<f32>;
+
+    fn neg(self) -> Self::Output {
+        self * -1.0
     }
 }
 

@@ -1679,3 +1679,7 @@ pub fn sin(mut rad: f32) -> f32 {
 pub fn cos(rad: f32) -> f32 {
     sin(rad + (PI / 2.0))
 }
+
+pub fn tan(rad: f32) -> f32 {
+    sin(rad) / cos(rad)
+}

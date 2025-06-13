@@ -1,21 +1,28 @@
 #![no_std]
 #![no_main]
 
+use crate::{
+    graphics::camera::perspective,
+    types::{
+        quat::Quaternion,
+        vector::{VEC3_X, VEC3_Y},
+        matrix::{Mat4}
+    },
+};
 use defmt::info;
 use esp_backtrace as _;
 use esp_hal::clock::CpuClock;
 use esp_hal::main;
 use esp_println as _;
 use types::vector::VEC3_ZERO;
+
 use {esp_backtrace as _, esp_println as _};
 
 pub mod display;
+pub mod graphics;
 pub mod math;
 pub mod model;
 pub mod types;
-
-const VIEWPORT_WIDTH: u16 = 320;
-const VIEWPORT_HEIGHT: u16 = 240;
 
 #[main]
 fn main() -> ! {
@@ -26,11 +33,24 @@ fn main() -> ! {
 
     info!("Beginning loop");
 
+    let cam = perspective(90.0, VEC3_X, -VEC3_X, VEC3_Y, 0.1, 50.0);
     let model = crate::model::model::from_obj(&crate::model::CUBE_OBJ);
 
     info!("Loaded model");
 
-    model.render(VEC3_ZERO);
+    cam.render(
+        model,
+        Mat4::<f32>::transform(
+            VEC3_ZERO,
+            Quaternion {
+                a: 1.0,
+                i: 0.0,
+                j: 0.0,
+                k: 0.0,
+            },
+            1.0,
+        ),
+    );
 
     loop {}
 
