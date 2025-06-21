@@ -8,15 +8,15 @@ const NUM_FACES: usize = 512;
 
 /// Represents a 3D model.
 pub struct Model {
-    pub verts: Vec<VertexData, NUM_VERTS>,
-    pub faces: Vec<FaceData, NUM_FACES>,
+    pub verts: Vec<Vertex, NUM_VERTS>,
+    pub faces: Vec<Face, NUM_FACES>,
 }
 
 #[derive(Clone, Copy, Format)]
 /// Represents a vertex. Contains
 /// model-space position, texture
 /// coordinates, and normals.
-pub struct VertexData {
+pub struct Vertex {
     pub pos: Vec3<f32>,
     pub tex_coords: Vec2<f32>,
     pub normal: Vec3<f32>,
@@ -25,14 +25,53 @@ pub struct VertexData {
 #[derive(Debug, Clone, Copy)]
 /// Represents a face. Contains
 /// indices of 3 composing vertices.
-pub struct FaceData {
+pub struct Face {
     pub verts: [usize; 3],
 }
 
-impl FaceData {
+impl Face {
     /// Creates a new face initialized to all zeroes.
-    pub fn new() -> FaceData {
-        FaceData { verts: [0, 0, 0] }
+    pub fn new() -> Face {
+        Face { verts: [0, 0, 0] }
+    }
+
+    /// Detects if a ray intersects with a triangular face.
+    pub fn point_within_face(&self, model: &Model, origin: Vec3<f32>, direction: Vec3<f32>) -> Option<Vec3<f32>> {
+        let tri_a = model.verts.get(self.verts[0]).expect("face should have a valid vertex index").pos;
+        let tri_b = model.verts.get(self.verts[1]).expect("face should have a valid vertex index").pos;
+        let tri_c = model.verts.get(self.verts[2]).expect("face should have a valid vertex index").pos;
+        let e1 = tri_b - tri_a;
+        let e2 = tri_c - tri_a;
+
+        let ray_cross_e2 = Vec3::<f32>::cross(direction, e2);
+        let det = Vec3::<f32>::dot(e1, ray_cross_e2);
+
+        if det > -f32::EPSILON && det < f32::EPSILON {
+            return None; // This ray is parallel to this triangle.
+        }
+
+        let inv_det = 1.0 / det;
+        let s = origin - tri_a;
+        let u = inv_det * Vec3::<f32>::dot(s, ray_cross_e2);
+        if u < 0.0 || u > 1.0 {
+            return None;
+        }
+
+        let s_cross_e1 = Vec3::<f32>::cross(s, e1);
+        let v = inv_det * Vec3::<f32>::dot(direction, s_cross_e1);
+        if v < 0.0 || u + v > 1.0 {
+            return None;
+        }
+        // At this stage we can compute t to find out where the intersection point is on the line.
+        let t = inv_det * Vec3::<f32>::dot(e2, s_cross_e1);
+
+        if t > f32::EPSILON { // ray intersection
+            let intersection_point = origin + direction * t;
+            return Some(intersection_point);
+        }
+        else { // This means that there is a line intersection but not a ray intersection.
+            return None;
+        }
     }
 }
 
@@ -51,8 +90,8 @@ pub fn from_obj(obj_file: &str) -> Model {
 
     info!("Split lines");
 
-    let mut vertices: Vec<VertexData, NUM_VERTS> = Vec::new();
-    let mut faces: Vec<FaceData, NUM_FACES> = Vec::new();
+    let mut vertices: Vec<Vertex, NUM_VERTS> = Vec::new();
+    let mut faces: Vec<Face, NUM_FACES> = Vec::new();
 
     info!("Created vecs 2");
 
@@ -133,7 +172,7 @@ pub fn from_obj(obj_file: &str) -> Model {
                 .write_str("face")
                 .expect("model parse context should be less than 16 chars");
 
-            let mut face: FaceData = FaceData::new();
+            let mut face: Face = Face::new();
 
             for i in 0..3 {
                 let mut vertex_components = parts.next().unwrap().split("/");
@@ -162,7 +201,7 @@ pub fn from_obj(obj_file: &str) -> Model {
                             point_index, tex_coord_index, normal_index
                         );
                         defmt::expect!(
-                            vertices.push(VertexData {
+                            vertices.push(Vertex {
                                 pos: points[point_index - 1].clone(),
                                 tex_coords: tex_coords[tex_coord_index - 1].clone(),
                                 normal: normals[normal_index - 1].clone(),
@@ -222,7 +261,7 @@ fn get_vertex(
     points: &Vec<Vec3<f32>, 256>,
     tex_coords: &Vec<Vec2<f32>, 256>,
     normals: &Vec<Vec3<f32>, 256>,
-    vertices: &Vec<VertexData, 256>,
+    vertices: &Vec<Vertex, 256>,
 ) -> Option<usize> {
     let given_point = points[point_index - 1];
     let given_tex_coord = tex_coords[tex_coord_index - 1];

@@ -59,9 +59,8 @@ fn main() -> ! {
                 },
                 1.0,
             ),
+            display
         );
-
-        display.render(&cam.fbo);
     }
 
     // for inspiration have a look at the examples at https://github.com/esp-rs/esp-hal/tree/esp-hal-v1.0.0-beta.0/examples/src/bin

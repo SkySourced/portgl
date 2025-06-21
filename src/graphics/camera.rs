@@ -1,9 +1,7 @@
 use core::f32::consts::PI;
 
 use crate::{
-    graphics::viewport::FrameBuffer,
-    model::model::Model,
-    types::{angle::tan, matrix::Mat4, vector::Vec3},
+    display::dvi::DviInterface, graphics::viewport::FrameBuffer, model::model::Model, types::{angle::tan, matrix::Mat4, vector::Vec3}
 };
 
 /// A virtual camera for rendering
@@ -16,14 +14,14 @@ pub struct Camera<const W: usize, const H: usize> where [(); W*H]: {
     pub near: f32,
     pub far: f32,
     pub fov: f32,
-    pub fbo: FrameBuffer<W, H>,
+    // pub fbo: FrameBuffer<W, H>,
 }
 
 impl<const W: usize, const H: usize> Camera<W, H> where [(); W*H]: {
-    pub fn render(&self, object: &Model, model_transform: Mat4<f32>) {
+    pub fn render(&self, object: &Model, model_transform: Mat4<f32>, output: &DviInterface) {
         for x in 0..W {
             for y in 0..H {
-
+                
             }
         }
     }
@@ -44,7 +42,7 @@ impl<const W: usize, const H: usize> Camera<W, H> where [(); W*H]: {
             fov: fov_h,
             near: near,
             far: far,
-            fbo: FrameBuffer::<W, H>::new(),
+            // fbo: FrameBuffer::<W, H>::new(),
             proj: Self::projection(near, far, fov_h, W as f32 / H as f32),
             view: Self::view(pos, pos + dir, up),
         }
