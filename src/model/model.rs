@@ -36,10 +36,28 @@ impl Face {
     }
 
     /// Detects if a ray intersects with a triangular face.
-    pub fn point_within_face(&self, model: &Model, origin: Vec3<f32>, direction: Vec3<f32>) -> Option<Vec3<f32>> {
-        let tri_a = model.verts.get(self.verts[0]).expect("face should have a valid vertex index").pos;
-        let tri_b = model.verts.get(self.verts[1]).expect("face should have a valid vertex index").pos;
-        let tri_c = model.verts.get(self.verts[2]).expect("face should have a valid vertex index").pos;
+    /// `direction` should be normalised.
+    pub fn ray_intersects_face(
+        &self,
+        model: &Model,
+        origin: Vec3<f32>,
+        direction: Vec3<f32>,
+    ) -> Option<Vec3<f32>> {
+        let tri_a = model
+            .verts
+            .get(self.verts[0])
+            .expect("face should have a valid vertex index")
+            .pos;
+        let tri_b = model
+            .verts
+            .get(self.verts[1])
+            .expect("face should have a valid vertex index")
+            .pos;
+        let tri_c = model
+            .verts
+            .get(self.verts[2])
+            .expect("face should have a valid vertex index")
+            .pos;
         let e1 = tri_b - tri_a;
         let e2 = tri_c - tri_a;
 
@@ -65,13 +83,28 @@ impl Face {
         // At this stage we can compute t to find out where the intersection point is on the line.
         let t = inv_det * Vec3::<f32>::dot(e2, s_cross_e1);
 
-        if t > f32::EPSILON { // ray intersection
+        if t > f32::EPSILON {
+            // ray intersection
             let intersection_point = origin + direction * t;
             return Some(intersection_point);
-        }
-        else { // This means that there is a line intersection but not a ray intersection.
+        } else {
+            // This means that there is a line intersection but not a ray intersection.
             return None;
         }
+    }
+
+    /// Returns true if a given ray intersects the front side (towards the normal) of this face.
+    /// Returns false if the ray is orthogonal to the normal, or is intersecting the back side.
+    /// Does not check if the ray collides. For this, `ray_intersects_face` should be used.
+    pub fn ray_front_face(&self, model: &Model, direction: Vec3<f32>) -> bool {
+        Vec3::<f32>::dot(
+            direction,
+            model
+                .verts
+                .get(self.verts[0])
+                .expect("face should have a valid vertex index")
+                .normal,
+        ) < 0.0
     }
 }
 

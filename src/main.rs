@@ -59,7 +59,7 @@ fn main() -> ! {
                 },
                 1.0,
             ),
-            display
+            &display,
         );
     }
 

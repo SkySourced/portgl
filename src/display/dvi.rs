@@ -1,4 +1,4 @@
-use crate::{display::tmds::TMDS, graphics::viewport::FrameBuffer};
+use crate::{display::tmds::TMDS, graphics::viewport::FrameBuffer, types::vector::Vec3};
 
 /// Represents a single set of three TMDS pairs.
 /// DVI Single Link has only one, but Dual Link
@@ -17,4 +17,10 @@ impl<'a> DviInterface<'a> {
         [(); W * H]:,
     {
     }
+
+    pub fn render_pixel(&mut self, pixel: Vec3<u8>) {
+        self.red_link.send_byte(pixel.x);
+        self.green_link.send_byte(pixel.y);
+        self.blue_link.send_byte(pixel.z);
+    };
 }

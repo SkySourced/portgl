@@ -1,11 +1,17 @@
 use core::f32::consts::PI;
 
 use crate::{
-    display::dvi::DviInterface, graphics::viewport::FrameBuffer, model::model::Model, types::{angle::tan, matrix::Mat4, vector::Vec3}
+    display::dvi::DviInterface,
+    graphics::viewport::FrameBuffer,
+    model::model::Model,
+    types::{angle::tan, matrix::Mat4, vector::Vec3},
 };
 
 /// A virtual camera for rendering
-pub struct Camera<const W: usize, const H: usize> where [(); W*H]: {
+pub struct Camera<const W: usize, const H: usize>
+where
+    [(); W * H]:,
+{
     pub pos: Vec3<f32>,
     pub dir: Vec3<f32>,
     pub up: Vec3<f32>,
@@ -17,12 +23,13 @@ pub struct Camera<const W: usize, const H: usize> where [(); W*H]: {
     // pub fbo: FrameBuffer<W, H>,
 }
 
-impl<const W: usize, const H: usize> Camera<W, H> where [(); W*H]: {
+impl<const W: usize, const H: usize> Camera<W, H>
+where
+    [(); W * H]:,
+{
     pub fn render(&self, object: &Model, model_transform: Mat4<f32>, output: &DviInterface) {
         for x in 0..W {
-            for y in 0..H {
-                
-            }
+            for y in 0..H {}
         }
     }
 
