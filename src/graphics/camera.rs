@@ -1,9 +1,10 @@
 use core::f32::consts::PI;
 
+use heapless::Vec;
+
 use crate::{
     display::dvi::DviInterface,
-    graphics::viewport::FrameBuffer,
-    model::model::Model,
+    model::model::{self, Model, NUM_VERTS},
     types::{angle::tan, matrix::Mat4, vector::Vec3},
 };
 
@@ -19,21 +20,34 @@ where
     pub view: Mat4<f32>,
     pub near: f32,
     pub far: f32,
-    pub fov: f32,
-    // pub fbo: FrameBuffer<W, H>,
+    pub fov_y: f32,
+    //pub fbo: FrameBuffer<Vec3<u8>, W, H>,
 }
 
 impl<const W: usize, const H: usize> Camera<W, H>
 where
     [(); W * H]:,
 {
-    pub fn render(&self, object: &Model, model_transform: Mat4<f32>, output: &DviInterface) {
+    pub fn render(&self, object: &Model, model_transform: Mat4<f32>, output: &mut DviInterface) {
+        let mut local_model: Model = object.clone();
+        let mut pd_verts: Vec<Vec3<f32>, {model::NUM_VERTS}> = Vec::new(); // Transformed verts after perspective division 
+
+        // Vertex shader
+        local_model.verts.iter_mut().for_each(|vertex| -> () {
+            vertex.pos = self.proj * self.view * model_transform * vertex.pos;
+            pd_verts.push(vertex.pos.perspective_division()).expect("vertex vectors should be the same length");
+        });
+        
+        // Rasterisation
         for x in 0..W {
-            for y in 0..H {}
+            for y in 0..H {
+                let x_ndc = (x as f32 / W as f32 - 0.5) * 2.0;
+                let y_ndc = (y as f32 / H as f32 - 0.5) * 2.0;
+            }
         }
     }
 
-    /// Creates a new perspective camera
+    /// Creates a new perspective camera. `fov_h` is measured in degrees
     pub fn perspective(
         fov_h: f32,
         pos: Vec3<f32>,
@@ -46,10 +60,10 @@ where
             pos: pos,
             dir: dir,
             up: up,
-            fov: fov_h,
+            fov_y: fov_h,
             near: near,
             far: far,
-            // fbo: FrameBuffer::<W, H>::new(),
+            // fbo: FrameBuffer::<Vec3<u8>, W, H>::new(),
             proj: Self::projection(near, far, fov_h, W as f32 / H as f32),
             view: Self::view(pos, pos + dir, up),
         }

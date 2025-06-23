@@ -1,11 +1,12 @@
-use crate::types::vector::{Vec2, Vec3};
+use crate::types::vector::{Vec2, Vec3, Vec4};
 use core::fmt::{Debug, Write};
 use defmt::{info, Format};
 use heapless::Vec;
 
-const NUM_VERTS: usize = 256;
-const NUM_FACES: usize = 512;
+pub const NUM_VERTS: usize = 256;
+pub const NUM_FACES: usize = 512;
 
+#[derive(Clone)]
 /// Represents a 3D model.
 pub struct Model {
     pub verts: Vec<Vertex, NUM_VERTS>,
@@ -17,9 +18,9 @@ pub struct Model {
 /// model-space position, texture
 /// coordinates, and normals.
 pub struct Vertex {
-    pub pos: Vec3<f32>,
+    pub pos: Vec4<f32>,
     pub tex_coords: Vec2<f32>,
-    pub normal: Vec3<f32>,
+    pub normal: Vec4<f32>,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -47,17 +48,21 @@ impl Face {
             .verts
             .get(self.verts[0])
             .expect("face should have a valid vertex index")
-            .pos;
+            .pos
+            .to_vec3();
         let tri_b = model
             .verts
             .get(self.verts[1])
             .expect("face should have a valid vertex index")
-            .pos;
+            .pos
+            .to_vec3();
         let tri_c = model
             .verts
             .get(self.verts[2])
             .expect("face should have a valid vertex index")
-            .pos;
+            .pos
+            .to_vec3();
+
         let e1 = tri_b - tri_a;
         let e2 = tri_c - tri_a;
 
@@ -103,7 +108,8 @@ impl Face {
                 .verts
                 .get(self.verts[0])
                 .expect("face should have a valid vertex index")
-                .normal,
+                .normal
+                .to_vec3(),
         ) < 0.0
     }
 }
@@ -113,8 +119,8 @@ impl Face {
 pub fn from_obj(obj_file: &str) -> Model {
     info!("Creating model");
 
-    let mut points: Vec<Vec3<f32>, NUM_VERTS> = Vec::new();
-    let mut normals: Vec<Vec3<f32>, NUM_VERTS> = Vec::new();
+    let mut points: Vec<Vec4<f32>, NUM_VERTS> = Vec::new();
+    let mut normals: Vec<Vec4<f32>, NUM_VERTS> = Vec::new();
     let mut tex_coords: Vec<Vec2<f32>, NUM_VERTS> = Vec::new();
 
     info!("Created vecs");
@@ -145,10 +151,11 @@ pub fn from_obj(obj_file: &str) -> Model {
                 .expect("model parse context should be less than 16 chars");
 
             defmt::expect!(
-                points.push(Vec3 {
+                points.push(Vec4 {
                     x: parse_float(parts.next(), &context),
                     y: parse_float(parts.next(), &context),
                     z: parse_float(parts.next(), &context),
+                    w: 1.0
                 }),
                 "loaded model should not contain more than 4096 points"
             );
@@ -185,10 +192,11 @@ pub fn from_obj(obj_file: &str) -> Model {
                 .expect("model parse context should be less than 16 chars");
 
             defmt::expect!(
-                normals.push(Vec3 {
+                normals.push(Vec4 {
                     x: parse_float(parts.next(), &context),
                     y: parse_float(parts.next(), &context),
                     z: parse_float(parts.next(), &context),
+                    w: 0.0
                 }),
                 "loaded model should not contain more than 4096 normals"
             );
@@ -291,9 +299,9 @@ fn get_vertex(
     point_index: usize,
     tex_coord_index: usize,
     normal_index: usize,
-    points: &Vec<Vec3<f32>, 256>,
+    points: &Vec<Vec4<f32>, 256>,
     tex_coords: &Vec<Vec2<f32>, 256>,
-    normals: &Vec<Vec3<f32>, 256>,
+    normals: &Vec<Vec4<f32>, 256>,
     vertices: &Vec<Vertex, 256>,
 ) -> Option<usize> {
     let given_point = points[point_index - 1];

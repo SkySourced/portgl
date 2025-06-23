@@ -12,15 +12,23 @@ pub struct DviInterface<'a> {
 }
 
 impl<'a> DviInterface<'a> {
-    pub fn render<const W: usize, const H: usize>(&self, fbo: &FrameBuffer<W, H>)
+    pub fn render<const W: usize, const H: usize>(&mut self, fbo: &FrameBuffer<Vec3<u8>, W, H>)
     where
         [(); W * H]:,
     {
+        for y in 0..H {
+            for x in 0..W {
+                let pixel_color: Vec3<u8> = fbo.get(x, y);
+                self.red_link.send_byte(pixel_color.x);
+                self.green_link.send_byte(pixel_color.y);
+                self.blue_link.send_byte(pixel_color.z);
+            }
+        }
     }
 
     pub fn render_pixel(&mut self, pixel: Vec3<u8>) {
         self.red_link.send_byte(pixel.x);
         self.green_link.send_byte(pixel.y);
         self.blue_link.send_byte(pixel.z);
-    };
+    }
 }

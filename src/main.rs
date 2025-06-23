@@ -37,7 +37,7 @@ fn main() -> ! {
 
     let cam = Camera::<480, 360>::perspective(90.0, VEC3_X, -VEC3_X, VEC3_Y, 0.1, 50.0);
     let model = crate::model::model::from_obj(&crate::model::CUBE_OBJ);
-    let display = DviInterface {
+    let mut display = DviInterface {
         red_link: TMDS::new(_peripherals.GPIO1, _peripherals.GPIO2),
         green_link: TMDS::new(_peripherals.GPIO3, _peripherals.GPIO4),
         blue_link: TMDS::new(_peripherals.GPIO13, _peripherals.GPIO12),
@@ -59,7 +59,7 @@ fn main() -> ! {
                 },
                 1.0,
             ),
-            &display,
+            &mut display,
         );
     }
 

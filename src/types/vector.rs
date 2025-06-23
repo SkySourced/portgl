@@ -125,7 +125,7 @@ impl Vec2<f32> {
     }
 }
 
-#[derive(Copy, Clone, Format)]
+#[derive(Copy, Clone, Format, Debug)]
 /// Represents a 3D vector.
 pub struct Vec3<T> {
     pub x: T,
@@ -221,6 +221,14 @@ impl Vec3<f32> {
         }
     }
 
+    /// Creates a Vec2 out of a Vec3, discarding `z`
+    pub fn to_vec2(&self) -> Vec2<f32> {
+        Vec2 {
+            x: self.x,
+            y: self.y,
+        }
+    }
+
     /// Calculates the length of this vector.
     pub fn len(&self) -> f32 {
         sqrt((self.x * self.x + self.y * self.y + self.z * self.z) as f32)
@@ -266,6 +274,19 @@ impl AddAssign<Vec4<f32>> for Vec4<f32> {
     }
 }
 
+impl Sub<Vec4<f32>> for Vec4<f32> {
+    type Output = Vec4<f32>;
+
+    fn sub(self, rhs: Vec4<f32>) -> Self::Output {
+        Vec4::<f32> {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+            w: self.w - rhs.w,
+        }
+    }
+}
+
 impl Mul<f32> for Vec4<f32> {
     type Output = Vec4<f32>;
     fn mul(self, rhs: f32) -> Self::Output {
@@ -302,13 +323,31 @@ impl Vec4<f32> {
         }
     }
 
-    /// Creates a Vec4 out of a Vec3 and a fourth component.
+    /// Creates a `Vec4` out of a `Vec3` and a fourth component.
     pub fn of(vec3: Vec3<f32>, w: f32) -> Vec4<f32> {
         Vec4::<f32> {
             x: vec3.x,
             y: vec3.y,
             z: vec3.z,
             w: w,
+        }
+    }
+
+    /// Creates a `Vec3` out of a `Vec4`, discarding `w`.
+    pub fn to_vec3(&self) -> Vec3<f32> {
+        Vec3 {
+            x: self.x,
+            y: self.y,
+            z: self.z,
+        }
+    }
+
+    /// Divides by the perspective component (`w`) creating a `Vec3`.
+    pub fn perspective_division(&self) -> Vec3<f32> {
+        Vec3 {
+            x: self.x / self.w,
+            y: self.y / self.w,
+            z: self.z / self.w,
         }
     }
 
