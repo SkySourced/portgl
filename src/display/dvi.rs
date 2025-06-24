@@ -31,4 +31,12 @@ impl<'a> DviInterface<'a> {
         self.green_link.send_byte(pixel.y);
         self.blue_link.send_byte(pixel.z);
     }
+
+    pub fn end_row(&self) {
+
+    }
+
+    pub fn end_frame(&self) {
+
+    }
 }

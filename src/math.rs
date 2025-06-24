@@ -13,3 +13,12 @@ pub fn sqrt(num: f32) -> f32 {
     }
     n
 }
+
+/// Raises a float to an int power
+pub fn powi(base: f32, exp: u8) -> f32 {
+    if exp == 0 {
+        1.0
+    } else {
+        base * powi(base, exp - 1)
+    }
+}

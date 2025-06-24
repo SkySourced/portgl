@@ -175,6 +175,18 @@ impl Mul<f32> for Vec3<f32> {
     }
 }
 
+/// Componentwise
+impl Mul for Vec3<f32> {
+    type Output = Vec3<f32>;
+    fn mul(self, rhs: Self) -> Self::Output {
+        Vec3 {
+            x: self.x * rhs.x,
+            y: self.y * rhs.y,
+            z: self.z * rhs.z
+        }
+    }
+}
+
 impl MulAssign<f32> for Vec3<f32> {
     fn mul_assign(&mut self, rhs: f32) {
         self.x *= rhs;
@@ -197,6 +209,29 @@ impl PartialEq for Vec3<f32> {
     }
 }
 
+impl Add for Vec3<u8> {
+    type Output = Vec3<u8>;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Vec3 {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
+    }
+}
+
+impl Vec3<u8> {
+    /// Converts from 8-bit colour to f32 colour.
+    pub fn to_float_colour(&self) -> Vec3<f32> {
+        Vec3 {
+            x: f32::min(self.x as f32 / 255.0, 1.0),
+            y: f32::min(self.y as f32 / 255.0, 1.0),
+            z: f32::min(self.z as f32 / 255.0, 1.0),
+        }
+    }
+}
+
 impl Vec3<f32> {
     /// Computes the dot/inner/scalar product of the two vectors provided.
     pub fn dot(v1: Vec3<f32>, v2: Vec3<f32>) -> f32 {
@@ -209,6 +244,20 @@ impl Vec3<f32> {
             x: v1.y * v2.z - v1.z * v2.y,
             y: v1.x * v2.z - v1.z * v2.x,
             z: v1.x * v2.y - v1.y * v2.x,
+        }
+    }
+
+    /// Projects a vector onto another vector.
+    pub fn proj(v1: Vec3<f32>, v2: Vec3<f32>) -> Vec3<f32> {
+        v2 * (Self::dot(v1, v2) / Self::dot(v2, v2))
+    }
+
+    /// Converts from f32 colour to 8-bit colour.
+    pub fn to_8bit_colour(&self) -> Vec3<u8> {
+        Vec3 {
+            x: u8::min((self.x * 255.0) as u8, 255),
+            y: u8::min((self.y * 255.0) as u8, 255),
+            z: u8::min((self.z * 255.0) as u8, 255),
         }
     }
 
