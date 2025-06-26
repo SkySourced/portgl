@@ -1,6 +1,6 @@
 use crate::types::vector::{Vec2, Vec3, Vec4};
 use core::fmt::{Debug, Write};
-use defmt::{info, Format};
+use defmt::{debug, Format};
 use heapless::Vec;
 
 pub const NUM_VERTS: usize = 256;
@@ -117,29 +117,29 @@ impl Face {
 /// Creates a Model from an OBJ
 /// file.
 pub fn from_obj(obj_file: &str) -> Model {
-    info!("Creating model");
+    debug!("Creating model");
 
     let mut points: Vec<Vec4<f32>, NUM_VERTS> = Vec::new();
     let mut normals: Vec<Vec4<f32>, NUM_VERTS> = Vec::new();
     let mut tex_coords: Vec<Vec2<f32>, NUM_VERTS> = Vec::new();
 
-    info!("Created vecs");
+    debug!("Created vecs");
 
     let mut lines: core::str::Split<'_, &'static str> = obj_file.split("\n");
 
-    info!("Split lines");
+    debug!("Split lines");
 
     let mut vertices: Vec<Vertex, NUM_VERTS> = Vec::new();
     let mut faces: Vec<Face, NUM_FACES> = Vec::new();
 
-    info!("Created vecs 2");
+    debug!("Created vecs 2");
 
     let mut context = heapless::String::<16>::new();
 
-    info!("Created context");
+    debug!("Created context");
 
     while let Some(i) = lines.next() {
-        // info!("{:?}", i);
+        // debug!("{:?}", i);
         let mut parts = i.split(" ");
 
         let token: Option<&str> = parts.next();
@@ -160,7 +160,7 @@ pub fn from_obj(obj_file: &str) -> Model {
                 "loaded model should not contain more than 4096 points"
             );
 
-            info!(
+            debug!(
                 "Added point_index {} {} {}",
                 points.last().unwrap().x,
                 points.last().unwrap().y,
@@ -180,7 +180,7 @@ pub fn from_obj(obj_file: &str) -> Model {
                 "loaded model should not contain more than 4096 tex coords"
             );
 
-            info!(
+            debug!(
                 "Added tex coord {} {}",
                 tex_coords.last().unwrap().x,
                 tex_coords.last().unwrap().y
@@ -201,7 +201,7 @@ pub fn from_obj(obj_file: &str) -> Model {
                 "loaded model should not contain more than 4096 normals"
             );
 
-            info!(
+            debug!(
                 "Added vertex normal {} {} {}",
                 normals.last().unwrap().x,
                 normals.last().unwrap().y,
@@ -237,7 +237,7 @@ pub fn from_obj(obj_file: &str) -> Model {
                 face.verts[i] = match vertex_in_array {
                     Some(i) => i,
                     None => {
-                        info!(
+                        debug!(
                             "Adding vertex with indices {:?} {:?} {:?}",
                             point_index, tex_coord_index, normal_index
                         );
@@ -258,7 +258,7 @@ pub fn from_obj(obj_file: &str) -> Model {
                 .push(face)
                 .expect("model should not contain more than 8192 unique faces");
 
-            info!("Added face {}", faces.last().unwrap().verts)
+            debug!("Added face {}", faces.last().unwrap().verts)
         }
     }
 
@@ -313,7 +313,7 @@ fn get_vertex(
     for (i, v) in vertices.iter().enumerate() {
         if v.pos == given_point && v.tex_coords == given_tex_coord && v.normal == given_normal {
             if matched_index.is_some() {
-                info!("about to panic");
+                debug!("about to panic");
                 defmt::panic!(
                     "more than one matching point for {:?} {:?} {:?}",
                     given_point,

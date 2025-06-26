@@ -182,7 +182,7 @@ impl Mul for Vec3<f32> {
         Vec3 {
             x: self.x * rhs.x,
             y: self.y * rhs.y,
-            z: self.z * rhs.z
+            z: self.z * rhs.z,
         }
     }
 }

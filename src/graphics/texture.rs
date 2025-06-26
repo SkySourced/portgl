@@ -1,3 +1,4 @@
+use defmt::info;
 use heapless::Vec;
 
 use crate::types::vector::{Vec2, Vec3};
@@ -6,7 +7,7 @@ pub struct Texture<const W: usize, const H: usize>
 where
     [(); W * H]:,
 {
-    buffer: Vec<Vec3<u8>,{ W * H }>,
+    buffer: Vec<Vec3<u8>, { W * H }>,
 }
 
 impl<const W: usize, const H: usize> Texture<W, H>
@@ -28,11 +29,16 @@ where
     }
 
     pub fn gen_checkerboard() -> Texture<W, H> {
+        info!("Generating checkerboard texture {:?}x{:?}", W, H);
         let mut tex: Texture<W, H> = Texture { buffer: Vec::new() };
         for y in 0..H {
             for x in 0..W {
                 if x / 8 % 2 == 1 && y / 8 % 2 == 1 {
-                    let _ = tex.buffer.push(Vec3 { x: 255, y: 255, z: 255 });
+                    let _ = tex.buffer.push(Vec3 {
+                        x: 255,
+                        y: 255,
+                        z: 255,
+                    });
                 } else {
                     let _ = tex.buffer.push(Vec3 { x: 0, y: 0, z: 0 });
                 }

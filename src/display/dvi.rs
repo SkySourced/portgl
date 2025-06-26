@@ -1,3 +1,5 @@
+use esp_hal::{i2c::master::I2c, Blocking};
+
 use crate::{display::tmds::TMDS, graphics::viewport::FrameBuffer, types::vector::Vec3};
 
 /// Represents a single set of three TMDS pairs.
@@ -9,6 +11,7 @@ pub struct DviInterface<'a> {
     pub green_link: TMDS<'a>,
     pub blue_link: TMDS<'a>,
     pub clock: TMDS<'a>,
+    pub ddc: I2c<'a, Blocking>,
 }
 
 impl<'a> DviInterface<'a> {
@@ -32,11 +35,7 @@ impl<'a> DviInterface<'a> {
         self.blue_link.send_byte(pixel.z);
     }
 
-    pub fn end_row(&self) {
+    pub fn end_row(&self) {}
 
-    }
-
-    pub fn end_frame(&self) {
-
-    }
+    pub fn end_frame(&self) {}
 }
