@@ -1,9 +1,11 @@
+use defmt::Format;
+
 use super::vector::{Vec3, Vec4};
 use crate::types::quat::Quaternion;
 use core::fmt::{Debug, Formatter, Result};
 use core::ops::{Add, AddAssign, Mul, MulAssign};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Format)]
 /// Represents a 4x4 matrix.
 /// Structure:
 // [v_00 v_01 v_02 v_03]
@@ -364,7 +366,7 @@ impl Mat4<f32> {
             v_30: 0.0,
             v_31: 0.0,
             v_32: 0.0,
-            v_33: 0.0,
+            v_33: 1.0,
         }
     }
 

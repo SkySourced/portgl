@@ -13,10 +13,10 @@ use crate::{
 };
 use defmt::info;
 use esp_backtrace as _;
-use esp_hal::main;
 use esp_hal::{
     clock::CpuClock,
     i2c::master::{Config, I2c},
+    timer::{timg::TimerGroup, OneShotTimer},
 };
 use esp_println as _;
 use types::vector::VEC3_ZERO;
@@ -32,29 +32,37 @@ pub mod types;
 pub type EdidBuffer = [u8; EDID_BUFFER_LEN];
 pub const EDID_BUFFER_LEN: usize = 256;
 
-#[main]
+#[esp_hal::main]
 fn main() -> ! {
     let config = esp_hal::Config::default().with_cpu_clock(CpuClock::max());
     let peripherals = esp_hal::init(config);
 
-    info!("{:?}", crate::model::CUBE_OBJ);
+    let timg0 = TimerGroup::new(peripherals.TIMG0);
 
-    let mut cam = Camera::<480, 360>::perspective(90.0, VEC3_X, -VEC3_X, VEC3_Y, 0.1, 50.0);
+    let mut cam = Camera::<80, 60>::perspective(90.0, VEC3_X * 5.0, -VEC3_X, VEC3_Y, 0.1, 50.0);
     info!("Created camera");
 
     let model = crate::model::model::from_obj(&crate::model::CUBE_OBJ);
     info!("Loaded model");
 
-    let mut display = DviInterface {
-        red_link: TMDS::new(peripherals.GPIO1, peripherals.GPIO2),
-        green_link: TMDS::new(peripherals.GPIO3, peripherals.GPIO4),
-        blue_link: TMDS::new(peripherals.GPIO12, peripherals.GPIO11),
-        clock: TMDS::new(peripherals.GPIO10, peripherals.GPIO9),
-        ddc: I2c::new(peripherals.I2C0, Config::default())
-            .expect("config should be correct")
-            .with_scl(peripherals.GPIO8)
-            .with_sda(peripherals.GPIO7),
-    };
+    let mut display = DviInterface::new(
+        peripherals.GPIO1.into(),
+        peripherals.GPIO2.into(),
+        peripherals.GPIO3.into(),
+        peripherals.GPIO4.into(),
+        peripherals.GPIO12.into(),
+        peripherals.GPIO11.into(),
+        peripherals.GPIO10.into(),
+        peripherals.GPIO9.into(),
+        peripherals.GPIO7.into(),
+        peripherals.GPIO8.into(),
+        peripherals.I2C0.into(),
+        timg0.timer0.into(),
+        timg0.timer1.into(),
+    );
+
+    // Set initial value for square wave inversion
+    display.clock.set_bit(true);
 
     info!("Created monitor link");
 
@@ -66,22 +74,14 @@ fn main() -> ! {
 
     info!("Beginning loop");
 
-    loop {
-        cam.render(
-            &model,
-            Mat4::<f32>::transform(
-                VEC3_ZERO,
-                Quaternion {
-                    a: 1.0,
-                    i: 0.0,
-                    j: 0.0,
-                    k: 0.0,
-                },
-                1.0,
-            ),
-            &mut display,
-        );
-    }
+    cam.render(
+        &model,
+        Mat4::<f32>::idt(),
+        &mut display,
+    );
 
-    // for inspiration have a look at the examples at https://github.com/esp-rs/esp-hal/tree/esp-hal-v1.0.0-beta.0/examples/src/bin
+    loop {
+        // cam.render_test(&mut display);
+        
+    }
 }

@@ -1,3 +1,4 @@
+use defmt::info;
 use esp_hal::{
     gpio::{Level, Output, OutputConfig, OutputPin},
     peripheral::Peripheral,
@@ -23,11 +24,26 @@ impl<'a> TMDS<'a> {
         }
     }
 
-    pub fn send_byte(&mut self, data: u8) -> () {
-        let encoded_data = self.encode_tmds(data);
+    pub fn set_bit(&mut self, bit: bool) {
+        self.pin_nor.set_level(bit.into());
+        self.pin_inv.set_level((!bit).into());
     }
 
-    fn encode_tmds(&mut self, data: u8) -> u16 {
+    pub fn toggle(&mut self) {
+        self.pin_nor.toggle();
+        self.pin_inv.toggle();
+    }
+
+    pub const fn encode_control_signal(c0: bool, c1: bool) -> u16 {
+        match (c1, c0) {
+            (false, false) => 0b0010101011,
+            (false, true) => 0b1101010100,
+            (true, false) => 0b0010101010,
+            (true, true) => 0b1101010101,
+        }
+    }
+
+    pub fn encode_tmds(&mut self, data: u8) -> u16 {
         let mut encoded: u8 = 0;
         let using_xor: bool;
         let bit_flip_occurred: bool;

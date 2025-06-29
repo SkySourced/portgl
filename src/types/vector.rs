@@ -118,6 +118,9 @@ impl Vec2<f32> {
 
     /// Normalises this vector, and returns it for chaining.
     pub fn nor(&mut self) -> &Self {
+        if *self == VEC2_ZERO {
+            return self;
+        }
         let len = self.len();
         self.x /= len;
         self.y /= len;
@@ -285,6 +288,9 @@ impl Vec3<f32> {
 
     /// Normalises this vector, and returns it for chaining.
     pub fn nor(&mut self) -> &Self {
+        if *self == VEC3_ZERO {
+            return self;
+        }
         let len = self.len();
         self.x /= len;
         self.y /= len;
@@ -393,6 +399,9 @@ impl Vec4<f32> {
 
     /// Divides by the perspective component (`w`) creating a `Vec3`.
     pub fn perspective_division(&self) -> Vec3<f32> {
+        if self.w == 0.0 {
+            panic!("Zero division")
+        }
         Vec3 {
             x: self.x / self.w,
             y: self.y / self.w,
@@ -407,6 +416,9 @@ impl Vec4<f32> {
 
     /// Normalises this vector, and returns it for chaining.
     pub fn nor(&mut self) -> &Self {
+        if *self == VEC4_ZERO {
+            return self;
+        }
         let len = self.len();
         self.x /= len;
         self.y /= len;

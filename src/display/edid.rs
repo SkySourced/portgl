@@ -10,7 +10,7 @@ pub fn read_edid(buf: EdidBuffer) {
     let mut correct_edid: EdidBuffer = [0; 256]; // data starting at header
 
     // Skip to start of header
-    for i in 0..EDID_BUFFER_LEN {
+    for i in 0..(EDID_BUFFER_LEN - 7) {
         if buf[i] == 0
             && buf[i + 1] == 255
             && buf[i + 2] == 255
@@ -31,7 +31,6 @@ pub fn read_edid(buf: EdidBuffer) {
         error!("EDID signature not found");
         return;
     } else {
-        info!("{:?}", correct_edid);
         info!("Valid signature found: {:?}", correct_edid[0..8]);
         info!(
             "Manufacturer ID: {:?} ({:x})",
@@ -72,7 +71,7 @@ pub fn read_edid(buf: EdidBuffer) {
         match ((correct_edid[18] as u16) << 8) + (correct_edid[19] as u16) {
             0x103 => read_103(&correct_edid),
             0x104 => read_104(&correct_edid),
-            _ => error!("Unimplemented EDID version")
+            _ => error!("Unimplemented EDID version"),
         }
     }
 }
@@ -106,16 +105,16 @@ fn read_display_params_103(buf: &EdidBuffer) {
     if buf[20] & 0b10000000 == 0b10000000 {
         // digital
         info!("Digital input");
-        
+
         // bits 6-1 are reserved and should be 0
-        
+
         if buf[20] & 0b1 == 0b1 {
             info!("Compatible with VESA DFP");
         } else {
             info!("Not compatible with VESA DFP");
         }
 
-        // more digital/analog specific 
+        // more digital/analog specific
         match (buf[24] & 0b11000) >> 3 {
             0b00 => info!("RGB 4:4:4"),
             0b01 => info!("RGB 4:4:4 + YCrCb 4:4:4"),
